@@ -6,9 +6,7 @@ mod config;
 pub use self::config::Config;
 use failure::Error;
 
-type Result<T> = std::result::Result<T, Error>;
-
-pub fn run(config: &Config) -> Result<()> {
+pub fn run(config: &Config) -> Result<(), Error> {
     println!("{:?}", config);
     let url = format!(
         "http://api.openweathermap.org/data/2.5/weather?appid={}&id={}&units=metric",

@@ -1,4 +1,4 @@
-use crate::Result;
+use crate::Error;
 
 #[derive(Debug)]
 pub struct Config {
@@ -9,7 +9,7 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn from_env() -> Result<Self> {
+    pub fn from_env() -> Result<Self, Error> {
         let owm_key = dotenv::var("NIMBUS_OWM_KEY")
             .expect("OpenWeatherMap API key missing (NIMBUS_OWM_KEY).");
         //let latitude = dotenv::var("NIMBUS_LATITUDE").expect("Missing latitude.");
