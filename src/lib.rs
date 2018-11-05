@@ -25,7 +25,7 @@ pub fn run(config: &Config) -> Result<(), Error> {
 fn owm_weather_url(config: &Config) -> Result<Url, url::ParseError> {
     let url = format!(
         "http://api.openweathermap.org/data/2.5/weather?appid={}&id={}&units=metric",
-        config.api_key, config.location,
+        config.owm_api_key, config.location,
     );
     Url::parse(&url)
 }
