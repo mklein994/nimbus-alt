@@ -6,13 +6,16 @@ mod config;
 
 pub use self::config::Config;
 use failure::Error;
+use reqwest::Client;
 use url::Url;
 
 pub fn run(config: &Config) -> Result<(), Error> {
     println!("{:?}", config);
 
+    let client = Client::builder().gzip(true).build()?;
+
     let url = owm_weather_url(&config)?;
-    let res = reqwest::get(url.as_str())?.error_for_status();
+    let res = client.get(url).send();
 
     match res {
         Ok(_) => println!("All good: {}", res?.text()?),
@@ -20,7 +23,7 @@ pub fn run(config: &Config) -> Result<(), Error> {
     }
 
     let url = darksky_weather_url(&config)?;
-    let res = reqwest::get(url.as_str())?.error_for_status();
+    let res = client.get(url).send();
 
     match res {
         Ok(_) => println!("All good: {}", res?.text()?),
