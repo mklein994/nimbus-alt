@@ -14,7 +14,7 @@ impl Config {
             .expect("OpenWeatherMap API key missing (NIMBUS_OWM_KEY).");
         //let latitude = dotenv::var("NIMBUS_LATITUDE").expect("Missing latitude.");
         //let longitude = dotenv::var("NIMBUS_LONGITUDE").expect("Missing longitude.");
-        let location = dotenv::var("NIMBUS_LOCATION").expect("Missing location.");
+        let location = dotenv::var("NIMBUS_OWM_LOCATION").expect("Missing location.");
 
         Ok(Self {
             api_key: owm_key,
