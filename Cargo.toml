@@ -5,6 +5,7 @@ authors = ["Matthew Klein <mklein994@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+dirs = "1.0.4"
 dotenv = "0.13.0"
 failure = "0.1.3"
 reqwest = "0.9.4"
