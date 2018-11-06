@@ -1,7 +1,5 @@
-extern crate dotenv;
-extern crate nimbus_alt;
-
-use nimbus_alt::Config;
+use dotenv;
+use nimbus_alt::{self, Config};
 
 fn main() {
     dotenv::dotenv().ok();

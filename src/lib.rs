@@ -1,13 +1,9 @@
-extern crate failure;
-extern crate reqwest;
-extern crate url;
-
 mod config;
 
 pub use self::config::Config;
 use failure::Error;
 use reqwest::Client;
-use url::Url;
+use url::{self, Url};
 
 pub fn run(config: &Config) -> Result<(), Error> {
     println!("{:?}", config);
