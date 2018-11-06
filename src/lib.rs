@@ -18,7 +18,7 @@ pub fn run(config: &Config) -> Result<(), Error> {
     let res = client.get(url).send();
 
     match res {
-        Ok(_) => println!("All good: {}", res?.text()?),
+        Ok(mut r) => println!("All good: {}", r.text()?),
         Err(e) => println!("error: {}", e),
     }
 
@@ -26,7 +26,7 @@ pub fn run(config: &Config) -> Result<(), Error> {
     let res = client.get(url).send();
 
     match res {
-        Ok(_) => println!("All good: {}", res?.text()?),
+        Ok(mut r) => println!("All good: {}", r.text()?),
         Err(e) => println!("error: {}", e),
     }
 
