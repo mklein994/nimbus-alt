@@ -30,10 +30,18 @@ pub fn run(config: &Config) -> Result<(), Error> {
 }
 
 fn owm_weather_url(config: &Config) -> Result<Url, url::ParseError> {
-    let url = format!(
-        "http://api.openweathermap.org/data/2.5/weather?appid={}&id={}&units=metric",
-        config.owm_api_key, config.location,
-    );
+    let url = if let Some(location) = &config.owm_location {
+        format!(
+            "http://api.openweathermap.org/data/2.5/weather?appid={}&id={}&units=metric",
+            config.owm_api_key, location
+        )
+    } else {
+        format!(
+            "http://api.openweathermap.org/data/2.5/weather?appid={}&lat={}&lon={}&units=metric",
+            config.owm_api_key, config.latitude, config.longitude
+        )
+    };
+
     Url::parse(&url)
 }
 

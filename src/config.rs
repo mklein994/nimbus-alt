@@ -8,7 +8,7 @@ use std::io::prelude::*;
 pub struct Config {
     pub owm_api_key: String,
     pub darksky_api_key: String,
-    pub location: String,
+    pub owm_location: Option<String>,
     pub latitude: f64,
     pub longitude: f64,
 }
@@ -36,12 +36,16 @@ impl Config {
             .expect("Darksky API key missing (NIMBUS_DARKSKY_KEY).");
         let latitude = dotenv::var("NIMBUS_LATITUDE").expect("Missing latitude.");
         let longitude = dotenv::var("NIMBUS_LONGITUDE").expect("Missing longitude.");
-        let location = dotenv::var("NIMBUS_OWM_LOCATION").expect("Missing location.");
+        let location = match dotenv::var("NIMBUS_OWM_LOCATION") {
+            Ok(location) => Some(location),
+            Err(ref e) if e.not_found() => None,
+            Err(e) => return Err(e.into()),
+        };
 
         Ok(Self {
             owm_api_key: owm_key,
             darksky_api_key,
-            location,
+            owm_location: location,
             latitude: latitude.parse()?,
             longitude: longitude.parse()?,
         })
