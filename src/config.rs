@@ -30,22 +30,22 @@ impl Config {
     }
 
     pub fn from_env() -> Result<Self, Error> {
-        let owm_key = dotenv::var("NIMBUS_OWM_KEY")
+        let owm_api_key = dotenv::var("NIMBUS_OWM_KEY")
             .expect("OpenWeatherMap API key missing (NIMBUS_OWM_KEY).");
         let darksky_api_key = dotenv::var("NIMBUS_DARKSKY_KEY")
             .expect("Darksky API key missing (NIMBUS_DARKSKY_KEY).");
         let latitude = dotenv::var("NIMBUS_LATITUDE").expect("Missing latitude.");
         let longitude = dotenv::var("NIMBUS_LONGITUDE").expect("Missing longitude.");
-        let location = match dotenv::var("NIMBUS_OWM_LOCATION") {
+        let owm_location = match dotenv::var("NIMBUS_OWM_LOCATION") {
             Ok(location) => Some(location),
             Err(ref e) if e.not_found() => None,
             Err(e) => return Err(e.into()),
         };
 
         Ok(Self {
-            owm_api_key: owm_key,
+            owm_api_key,
             darksky_api_key,
-            owm_location: location,
+            owm_location,
             latitude: latitude.parse()?,
             longitude: longitude.parse()?,
         })

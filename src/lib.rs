@@ -1,25 +1,51 @@
+#[macro_use]
+extern crate log;
+
 mod config;
+mod weather_api;
 
 pub use self::config::Config;
+use self::weather_api::{DarkSkyApi, DarkSkyUnit, Location, OwmApi, OwmUnit, UnitLike, WeatherApi};
 use failure::Error;
 use reqwest::Client;
-use url::{self, Url};
+use url::Url;
 
 pub fn run(config: &Config) -> Result<(), Error> {
-    println!("{:?}", config);
+    env_logger::init();
+    info!("logging enabled");
+    debug!("{:?}", config);
 
     let client = Client::builder().gzip(true).build()?;
 
-    let url = owm_weather_url(&config)?;
-    let res = client.get(url).send();
+    let location = config.owm_location.as_ref().unwrap();
+    let unit: Option<OwmUnit> = Some(UnitLike::metric());
+
+    let owm_api = OwmApi::new(
+        &config.owm_api_key,
+        Location::Id(location.to_string()),
+        &unit,
+    );
+    debug!("{:?}", owm_api);
+    let owm_url = owm_api.current_url();
+    debug!("owm url: {}", owm_url);
+    let res = client.get(owm_url).send();
 
     match res {
         Ok(mut r) => println!("All good: {}", r.text()?),
         Err(e) => println!("error: {}", e),
     }
 
-    let url = darksky_weather_url(&config)?;
-    let res = client.get(url).send();
+    let unit = Some(DarkSkyUnit::Ca);
+    let darksky_api = DarkSkyApi::new(
+        &config.darksky_api_key,
+        Location::Coord(config.latitude, config.longitude),
+        &unit,
+    );
+    debug!("{:?}", darksky_api);
+    let darksky_url = darksky_api.current_url();
+
+    debug!("darksky url: {}", darksky_url);
+    let res = client.get(darksky_url).send();
 
     match res {
         Ok(mut r) => println!("All good: {}", r.text()?),
@@ -27,28 +53,4 @@ pub fn run(config: &Config) -> Result<(), Error> {
     }
 
     Ok(())
-}
-
-fn owm_weather_url(config: &Config) -> Result<Url, url::ParseError> {
-    let url = if let Some(location) = &config.owm_location {
-        format!(
-            "http://api.openweathermap.org/data/2.5/weather?appid={}&id={}&units=metric",
-            config.owm_api_key, location
-        )
-    } else {
-        format!(
-            "http://api.openweathermap.org/data/2.5/weather?appid={}&lat={}&lon={}&units=metric",
-            config.owm_api_key, config.latitude, config.longitude
-        )
-    };
-
-    Url::parse(&url)
-}
-
-fn darksky_weather_url(config: &Config) -> Result<Url, url::ParseError> {
-    let url = format!(
-        "https://api.darksky.net/forecast/{}/{},{}",
-        config.darksky_api_key, config.latitude, config.longitude
-    );
-    Url::parse(&url)
 }
