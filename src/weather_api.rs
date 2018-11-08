@@ -17,6 +17,21 @@ pub trait UnitLike: PartialEq + Eq + std::fmt::Debug + Copy + Clone {
 }
 
 #[derive(Debug)]
+pub enum Location {
+    Coord(f64, f64),
+    Id(String),
+}
+
+pub trait WeatherApi {
+    const BASE_URL: &'static str;
+    type Unit: UnitLike;
+
+    fn new(key: &str, location: Location, unit: &Option<Self::Unit>) -> Self;
+
+    fn current_url(&self) -> Url;
+}
+
+#[derive(Debug)]
 pub struct OwmApi(Api<OwmUnit>);
 
 #[derive(Debug, PartialEq, Eq, Copy, Clone)]
@@ -30,53 +45,14 @@ impl UnitLike for OwmUnit {
     fn metric() -> Self {
         OwmUnit::Metric
     }
+
     fn imperial() -> Self {
         OwmUnit::Imperial
     }
+
     fn default() -> Self {
         OwmUnit::Si
     }
-}
-
-#[derive(Debug)]
-pub struct DarkSkyApi(Api<DarkSkyUnit>);
-
-#[derive(Debug)]
-pub enum Location {
-    Coord(f64, f64),
-    Id(String),
-}
-
-#[derive(Debug, PartialEq, Eq, Copy, Clone)]
-pub enum DarkSkyUnit {
-    Auto,
-    Ca,
-    Si,
-    Uk2,
-    Us,
-}
-
-impl UnitLike for DarkSkyUnit {
-    fn metric() -> Self {
-        DarkSkyUnit::Si
-    }
-
-    fn imperial() -> Self {
-        DarkSkyUnit::Us
-    }
-
-    fn default() -> Self {
-        DarkSkyUnit::Us
-    }
-}
-
-pub trait WeatherApi {
-    const BASE_URL: &'static str;
-    type Unit: UnitLike;
-
-    fn new(key: &str, location: Location, unit: &Option<Self::Unit>) -> Self;
-
-    fn current_url(&self) -> Url;
 }
 
 impl WeatherApi for OwmApi {
@@ -119,6 +95,32 @@ impl WeatherApi for OwmApi {
         };
 
         url
+    }
+}
+
+#[derive(Debug)]
+pub struct DarkSkyApi(Api<DarkSkyUnit>);
+
+#[derive(Debug, PartialEq, Eq, Copy, Clone)]
+pub enum DarkSkyUnit {
+    Auto,
+    Ca,
+    Si,
+    Uk2,
+    Us,
+}
+
+impl UnitLike for DarkSkyUnit {
+    fn metric() -> Self {
+        DarkSkyUnit::Si
+    }
+
+    fn imperial() -> Self {
+        DarkSkyUnit::Us
+    }
+
+    fn default() -> Self {
+        DarkSkyUnit::Us
     }
 }
 
