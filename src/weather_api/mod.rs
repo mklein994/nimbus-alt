@@ -1,4 +1,4 @@
-use super::Url;
+use url::Url;
 
 pub mod darksky;
 pub mod owm;

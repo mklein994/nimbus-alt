@@ -10,7 +10,6 @@ use self::weather_api::owm::{OwmApi, OwmUnit};
 use self::weather_api::{Location, UnitLike, WeatherApi};
 use failure::Error;
 use reqwest::Client;
-use url::Url;
 
 pub fn run(config: &Config) -> Result<(), Error> {
     env_logger::init();
