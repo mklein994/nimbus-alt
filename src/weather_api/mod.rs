@@ -1,5 +1,8 @@
 use super::Url;
 
+pub mod darksky;
+pub mod owm;
+
 #[derive(Debug)]
 struct Api<T>
 where
@@ -30,7 +33,3 @@ pub trait WeatherApi {
 
     fn current_url(&self) -> Url;
 }
-
-pub mod owm;
-
-pub mod darksky;
