@@ -5,7 +5,8 @@ mod config;
 mod weather_api;
 
 pub use self::config::Config;
-use self::weather_api::{DarkSkyApi, DarkSkyUnit, Location, OwmApi, OwmUnit, UnitLike, WeatherApi};
+use self::weather_api::{DarkSkyApi, Location, OwmApi, UnitLike, WeatherApi};
+pub use self::weather_api::{DarkSkyUnit, OwmUnit};
 use failure::Error;
 use reqwest::Client;
 use url::Url;
