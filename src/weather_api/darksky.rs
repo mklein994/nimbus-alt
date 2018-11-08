@@ -43,35 +43,35 @@ impl WeatherApi for DarkSkyApi {
     }
 
     fn current_url(&self) -> Url {
+        let mut url = Url::parse(&format!(
+            "{base}/{key}",
+            base = Self::BASE_URL,
+            key = self.0.key
+        ))
+        .unwrap();
+
         if let Location::Coord(lat, lon) = self.0.location {
-            let mut url = Url::parse(&format!(
-                "{base}/{key}/{lat},{lon}",
-                base = Self::BASE_URL,
-                key = self.0.key,
-                lat = lat,
-                lon = lon
-            ))
-            .unwrap();
-
-            match self.0.unit {
-                Some(u) if u != DarkSkyUnit::default() => {
-                    url.query_pairs_mut().append_pair(
-                        "units",
-                        match u {
-                            DarkSkyUnit::Auto => "auto",
-                            DarkSkyUnit::Ca => "ca",
-                            DarkSkyUnit::Uk2 => "uk2",
-                            DarkSkyUnit::Us => "us",
-                            DarkSkyUnit::Si => "si",
-                        },
-                    );
-                }
-                _ => {}
-            }
-
-            url
-        } else {
-            unimplemented!()
+            url.path_segments_mut()
+                .unwrap()
+                .push(&format!("{lat},{lon}", lat = lat, lon = lon));
         }
+
+        match self.0.unit {
+            Some(u) if u != DarkSkyUnit::default() => {
+                url.query_pairs_mut().append_pair(
+                    "units",
+                    match u {
+                        DarkSkyUnit::Auto => "auto",
+                        DarkSkyUnit::Ca => "ca",
+                        DarkSkyUnit::Uk2 => "uk2",
+                        DarkSkyUnit::Us => "us",
+                        DarkSkyUnit::Si => "si",
+                    },
+                );
+            }
+            _ => {}
+        }
+
+        url
     }
 }
