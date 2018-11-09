@@ -23,6 +23,11 @@ pub fn run(config: &Config) -> Result<(), Error> {
     let darksky_current_url = darksky_current_url(&config);
     debug!("darksky url: {}", darksky_current_url);
 
+    // TODO: remove this feature once testing is setup
+    if cfg!(feature = "live") == false {
+        return Ok(());
+    }
+
     let client = Client::builder().gzip(true).build()?;
 
     client.get(owm_current_url).send().and_then(|mut r| {

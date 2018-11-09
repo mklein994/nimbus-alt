@@ -15,3 +15,7 @@ serde = "1.0"
 serde_derive = "1.0"
 toml = "0.4.8"
 url = "1.7.1"
+
+[features]
+# TODO: remove this feature once testing is setup
+live = []
