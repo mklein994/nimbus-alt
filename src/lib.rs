@@ -6,36 +6,48 @@ mod weather_api;
 
 pub use self::config::Config;
 use self::weather_api::darksky::{DarkSkyApi, DarkSkyUnit};
-use self::weather_api::owm::{OwmApi, OwmUnit};
-use self::weather_api::{Location, UnitLike, WeatherApi};
+use self::weather_api::owm::OwmApi;
+use self::weather_api::{Location, WeatherApi};
 use failure::Error;
 use reqwest::Client;
+use url::Url;
 
 pub fn run(config: &Config) -> Result<(), Error> {
     env_logger::init();
     info!("logging enabled");
     debug!("{:?}", config);
 
+    let owm_current_url = owm_current_url(&config);
+    debug!("owm url: {}", owm_current_url);
+
+    let darksky_current_url = darksky_current_url(&config);
+    debug!("darksky url: {}", darksky_current_url);
+
     let client = Client::builder().gzip(true).build()?;
 
-    let location = config.owm_location.as_ref().unwrap();
-    let unit: Option<OwmUnit> = Some(UnitLike::metric());
+    client.get(owm_current_url).send().and_then(|mut r| {
+        trace!("OWM current conditions json: {}", r.text()?);
+        Ok(())
+    })?;
 
-    let owm_api = OwmApi::new(
-        &config.owm_api_key,
-        Location::Id(location.to_string()),
-        &unit,
-    );
-    debug!("{:?}", owm_api);
-    let owm_url = owm_api.current_url();
-    debug!("owm url: {}", owm_url);
-    let res = client.get(owm_url).send();
+    client.get(darksky_current_url).send().and_then(|mut r| {
+        trace!("DarkSky current conditions json: {}", r.text()?);
+        Ok(())
+    })?;
 
-    match res {
-        Ok(mut r) => println!("All good: {}", r.text()?),
-        Err(e) => println!("error: {}", e),
-    }
+    Ok(())
+}
 
+fn owm_current_url(config: &Config) -> Url {
+    let location: Location = match &config.owm_location {
+        Some(id) => Location::Id(id.to_string()),
+        None => Location::Coord(config.latitude, config.longitude),
+    };
+
+    OwmApi::new(&config.owm_api_key, location, &config.owm_unit).current_url()
+}
+
+fn darksky_current_url(config: &Config) -> Url {
     let unit = Some(DarkSkyUnit::Ca);
     let darksky_api = DarkSkyApi::new(
         &config.darksky_api_key,
@@ -43,15 +55,5 @@ pub fn run(config: &Config) -> Result<(), Error> {
         &unit,
     );
     debug!("{:?}", darksky_api);
-    let darksky_url = darksky_api.current_url();
-
-    debug!("darksky url: {}", darksky_url);
-    let res = client.get(darksky_url).send();
-
-    match res {
-        Ok(mut r) => println!("All good: {}", r.text()?),
-        Err(e) => println!("error: {}", e),
-    }
-
-    Ok(())
+    darksky_api.current_url()
 }

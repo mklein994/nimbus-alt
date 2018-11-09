@@ -1,3 +1,4 @@
+use crate::weather_api::owm::OwmUnit;
 use crate::Error;
 use failure::ResultExt;
 use serde_derive::Deserialize;
@@ -11,6 +12,7 @@ pub struct Config {
     pub owm_location: Option<String>,
     pub latitude: f64,
     pub longitude: f64,
+    pub owm_unit: Option<OwmUnit>,
 }
 
 impl Config {

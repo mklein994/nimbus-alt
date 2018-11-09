@@ -1,10 +1,12 @@
 use super::{Api, Location, UnitLike, WeatherApi};
+use serde_derive::Deserialize;
 use url::Url;
 
 #[derive(Debug)]
 pub struct OwmApi(Api<OwmUnit>);
 
-#[derive(Debug, PartialEq, Eq, Copy, Clone)]
+#[derive(Debug, PartialEq, Eq, Copy, Clone, Deserialize)]
+#[serde(rename_all = "lowercase")]
 pub enum OwmUnit {
     Metric,
     Imperial,
