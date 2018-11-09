@@ -19,7 +19,7 @@ pub trait UnitLike: PartialEq + Eq + std::fmt::Debug + Copy + Clone {
     fn default() -> Self;
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Location {
     Coord(f64, f64),
     Id(String),
