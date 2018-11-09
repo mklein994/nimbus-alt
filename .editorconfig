@@ -1,0 +1,7 @@
+# EditorConfig https://editorconfig.org
+
+root = true
+
+[.travis.yml]
+indentation_style = space
+indent_size = 2
