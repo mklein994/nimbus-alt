@@ -69,3 +69,21 @@ impl WeatherApi for OwmApi {
         url
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_gets_current_weather_url() {
+        let owm = OwmApi(Api {
+            key: String::from("my_key"),
+            location: Location::Id(String::from("a1b2c3d4")),
+            unit: Some(OwmUnit::Imperial),
+        });
+
+        let expected_url = Url::parse("http://api.openweathermap.org/data/2.5/weather?appid=my_key&id=a1b2c3d4&units=imperial").unwrap();
+        let url = owm.current_url();
+        assert_eq!(expected_url, url);
+    }
+}

@@ -77,3 +77,22 @@ impl WeatherApi for DarkSkyApi {
         url
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_gets_current_weather_url() {
+        let darksky = DarkSkyApi(Api {
+            key: String::from("my_key"),
+            location: Location::Coord(12.345, -54.321),
+            unit: Some(DarkSkyUnit::Ca),
+        });
+
+        let expected_url =
+            Url::parse("https://api.darksky.net/forecast/my_key/12.345,-54.321?units=ca").unwrap();
+        let url = darksky.current_url();
+        assert_eq!(expected_url, url);
+    }
+}
