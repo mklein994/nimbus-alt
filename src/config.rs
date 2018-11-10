@@ -1,4 +1,6 @@
+use crate::weather_api::darksky::DarkSkyUnit;
 use crate::weather_api::owm::OwmUnit;
+use crate::weather_api::GenericWeatherUnit;
 use crate::Error;
 use failure::ResultExt;
 use serde_derive::Deserialize;
@@ -7,11 +9,33 @@ use std::io::prelude::*;
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
-    pub owm_api_key: String,
-    pub darksky_api_key: String,
-    pub owm_location: Option<String>,
     pub latitude: f64,
     pub longitude: f64,
+    pub unit: Option<GenericWeatherUnit>,
+    pub darksky: Option<DarkSkyConfig>,
+    pub owm: Option<OwmConfig>,
+}
+
+impl From<GenericWeatherUnit> for OwmUnit {
+    fn from(unit: GenericWeatherUnit) -> Self {
+        match unit {
+            GenericWeatherUnit::Metric => OwmUnit::Metric,
+            GenericWeatherUnit::Imperial => OwmUnit::Imperial,
+            GenericWeatherUnit::Si => OwmUnit::Si,
+        }
+    }
+}
+
+#[derive(Debug, Deserialize)]
+pub struct DarkSkyConfig {
+    pub darksky_api_key: String,
+    pub darksky_unit: Option<DarkSkyUnit>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct OwmConfig {
+    pub owm_api_key: String,
+    pub owm_location_id: Option<String>,
     pub owm_unit: Option<OwmUnit>,
 }
 

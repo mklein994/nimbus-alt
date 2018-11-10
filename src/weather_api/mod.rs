@@ -1,23 +1,9 @@
+use super::Config;
+use serde_derive::Deserialize;
 use url::Url;
 
 pub mod darksky;
 pub mod owm;
-
-#[derive(Debug)]
-struct Api<T>
-where
-    T: UnitLike,
-{
-    key: String,
-    location: Location,
-    unit: Option<T>,
-}
-
-pub trait UnitLike: PartialEq + Eq + std::fmt::Debug + Copy + Clone {
-    fn metric() -> Self;
-    fn imperial() -> Self;
-    fn default() -> Self;
-}
 
 #[derive(Debug, PartialEq)]
 pub enum Location {
@@ -25,11 +11,17 @@ pub enum Location {
     Id(String),
 }
 
-pub trait WeatherApi {
+#[derive(Debug, Deserialize, Copy, Clone)]
+#[serde(rename_all = "lowercase")]
+pub enum GenericWeatherUnit {
+    Metric,
+    Imperial,
+    Si,
+}
+
+pub trait WeatherApi: Sized {
     const BASE_URL: &'static str;
-    type Unit: UnitLike;
 
-    fn new(key: &str, location: Location, unit: &Option<Self::Unit>) -> Self;
-
+    fn new(config: &Config) -> Self;
     fn current_url(&self) -> Url;
 }
