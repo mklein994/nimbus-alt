@@ -106,4 +106,18 @@ mod tests {
         let url = darksky.current_url();
         assert_eq!(expected_url, url);
     }
+
+    #[test]
+    fn it_gets_current_weather_url_no_units() {
+        let darksky = DarkSkyApi {
+            key: String::from("my_key"),
+            location: Location::Coord(12.345, -54.321),
+            unit: None,
+        };
+
+        let expected_url =
+            Url::parse("https://api.darksky.net/forecast/my_key/12.345,-54.321").unwrap();
+        let url = darksky.current_url();
+        assert_eq!(expected_url, url);
+    }
 }
