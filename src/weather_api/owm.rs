@@ -97,4 +97,17 @@ mod tests {
         let url = owm.current_url();
         assert_eq!(expected_url, url);
     }
+
+    #[test]
+    fn it_gets_current_weather_url_with_coordinates() {
+        let owm = OwmApi {
+            key: String::from("my_key"),
+            location: Some(Location::Coord(12.345, -54.321)),
+            unit: Some(OwmUnit::Imperial),
+        };
+
+        let expected_url = Url::parse("http://api.openweathermap.org/data/2.5/weather?appid=my_key&lat=12.345&lon=-54.321&units=imperial").unwrap();
+        let url = owm.current_url();
+        assert_eq!(expected_url, url);
+    }
 }
