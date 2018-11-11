@@ -5,11 +5,11 @@ use serde_derive::Deserialize;
 use std::fs::File;
 use std::io::prelude::*;
 
-mod darksky;
-mod owm;
+mod darksky_config;
+mod owm_config;
 
-pub use self::darksky::*;
-pub use self::owm::*;
+pub use self::darksky_config::*;
+pub use self::owm_config::*;
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
