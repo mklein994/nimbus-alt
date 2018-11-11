@@ -4,9 +4,10 @@ extern crate log;
 mod config;
 mod weather_api;
 
-pub use self::config::Config;
+pub use self::config::*;
 use self::weather_api::darksky::DarkSkyApi;
 use self::weather_api::owm::OwmApi;
+pub use self::weather_api::GenericWeatherUnit;
 use self::weather_api::WeatherApi;
 use failure::Error;
 use reqwest::Client;
@@ -16,13 +17,11 @@ pub fn run(config: &Config) -> Result<(), Error> {
     info!("logging enabled");
     debug!("{:?}", config);
 
-    let owm = OwmApi::new(&config);
+    let owm_url = OwmApi::new_url(&config);
 
-    let owm_url = owm.current_url();
     info!("{}", owm_url);
 
-    let darksky = DarkSkyApi::new(&config);
-    let darksky_url = darksky.current_url();
+    let darksky_url = DarkSkyApi::new_url(&config);
     info!("{}", darksky_url);
 
     // TODO: remove this feature once testing is setup
