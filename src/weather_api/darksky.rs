@@ -74,14 +74,14 @@ impl WeatherApi for DarkSkyApi {
                 .push(&format!("{lat},{lon}", lat = lat, lon = lon));
         }
 
-        match self.unit {
-            Some(u) if u != DarkSkyUnit::Us => {
+        self.unit
+            .filter(|unit| unit != &DarkSkyUnit::Us)
+            .and_then(|unit| {
                 url.query_pairs_mut()
-                    .append_pair("units", &u.to_string())
+                    .append_pair("units", &unit.to_string())
                     .finish();
-            }
-            _ => {}
-        }
+                Some(unit)
+            });
 
         url
     }
