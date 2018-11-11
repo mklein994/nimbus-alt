@@ -3,13 +3,15 @@ use super::WeatherApi;
 use crate::config::DarkSkyUnit;
 use url::Url;
 
-#[derive(Debug)]
-pub struct DarkSkyApi;
+#[derive(Debug, PartialEq)]
+pub struct DarkSkyApi {
+    pub url: Url,
+}
 
 impl WeatherApi for DarkSkyApi {
     const BASE_URL: &'static str = "https://api.darksky.net/forecast";
 
-    fn new_url(config: &Config) -> Url {
+    fn new(config: &Config) -> Self {
         config.darksky.as_ref().map_or_else(
             || panic!("Tried to create DarkSkyApi without api key."),
             |darksky| {
@@ -28,7 +30,7 @@ impl WeatherApi for DarkSkyApi {
                     url.query_pairs_mut()
                         .append_pair("units", &unit.to_string());
                 }
-                url
+                Self { url }
             },
         )
     }
@@ -50,11 +52,11 @@ mod tests {
             ..Default::default()
         };
 
-        let api_url = DarkSkyApi::new_url(&config);
+        let api = DarkSkyApi::new(&config);
 
         let expected_url =
             Url::parse("https://api.darksky.net/forecast/my_key/12.345,-54.321").unwrap();
-        assert_eq!(expected_url, api_url);
+        assert_eq!(DarkSkyApi { url: expected_url }, api);
     }
 
     #[test]
@@ -68,10 +70,10 @@ mod tests {
             ..Default::default()
         };
 
-        let api_url = DarkSkyApi::new_url(&config);
+        let api = DarkSkyApi::new(&config);
 
         let expected_url =
             Url::parse("https://api.darksky.net/forecast/my_key/12.345,-54.321?units=uk2").unwrap();
-        assert_eq!(expected_url, api_url);
+        assert_eq!(DarkSkyApi { url: expected_url }, api);
     }
 }

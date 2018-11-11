@@ -3,13 +3,15 @@ use super::WeatherApi;
 use crate::config::OwmUnit;
 use url::Url;
 
-#[derive(Debug)]
-pub struct OwmApi;
+#[derive(Debug, PartialEq)]
+pub struct OwmApi {
+    pub url: Url,
+}
 
 impl WeatherApi for OwmApi {
     const BASE_URL: &'static str = "https://api.openweathermap.org/data/2.5";
 
-    fn new_url(config: &Config) -> Url {
+    fn new(config: &Config) -> Self {
         config.owm.as_ref().map_or_else(
             || panic!("Tried to create OwmApi without api key."),
             |owm| {
@@ -38,7 +40,7 @@ impl WeatherApi for OwmApi {
                         .finish();
                 }
 
-                url
+                Self { url }
             },
         )
     }
@@ -60,12 +62,12 @@ mod tests {
             ..Default::default()
         };
 
-        let api_url = OwmApi::new_url(&config);
+        let api = OwmApi::new(&config);
 
         let expected_url =
             Url::parse("https://api.openweathermap.org/data/2.5/weather?appid=owm_key&id=a1b2c3d4")
                 .unwrap();
-        assert_eq!(expected_url, api_url);
+        assert_eq!(OwmApi { url: expected_url }, api);
     }
 
     #[test]
@@ -79,10 +81,10 @@ mod tests {
             ..Default::default()
         };
 
-        let api_url = OwmApi::new_url(&config);
+        let api = OwmApi::new(&config);
 
         let expected_url = Url::parse("https://api.openweathermap.org/data/2.5/weather?appid=owm_key&id=a1b2c3d4&units=imperial").unwrap();
-        assert_eq!(expected_url, api_url);
+        assert_eq!(OwmApi { url: expected_url }, api);
     }
 
     #[test]
@@ -96,13 +98,13 @@ mod tests {
             ..Default::default()
         };
 
-        let api_url = OwmApi::new_url(&config);
+        let api = OwmApi::new(&config);
 
         let expected_url = Url::parse(
             "https://api.openweathermap.org/data/2.5/weather?appid=owm_key&lat=12.345&lon=-54.321",
         )
         .unwrap();
-        assert_eq!(expected_url, api_url);
+        assert_eq!(OwmApi { url: expected_url }, api);
     }
 
     #[test]
@@ -117,10 +119,10 @@ mod tests {
             ..Default::default()
         };
 
-        let api_url = OwmApi::new_url(&config);
+        let api = OwmApi::new(&config);
 
         let expected_url = Url::parse("https://api.openweathermap.org/data/2.5/weather?appid=owm_key&lat=12.345&lon=-54.321&units=metric").unwrap();
-        assert_eq!(expected_url, api_url);
+        assert_eq!(OwmApi { url: expected_url }, api);
     }
 
     #[test]
@@ -135,6 +137,6 @@ mod tests {
             ..Default::default()
         };
 
-        OwmApi::new_url(&config);
+        OwmApi::new(&config);
     }
 }
