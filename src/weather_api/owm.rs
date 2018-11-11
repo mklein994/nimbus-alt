@@ -1,4 +1,5 @@
 use super::Config;
+use super::GenericWeatherUnit;
 use super::{Location, WeatherApi};
 use serde_derive::Deserialize;
 use std::fmt;
@@ -17,6 +18,16 @@ pub enum OwmUnit {
     Metric,
     Imperial,
     Si,
+}
+
+impl From<GenericWeatherUnit> for OwmUnit {
+    fn from(unit: GenericWeatherUnit) -> Self {
+        match unit {
+            GenericWeatherUnit::Metric => OwmUnit::Metric,
+            GenericWeatherUnit::Imperial => OwmUnit::Imperial,
+            GenericWeatherUnit::Si => OwmUnit::Si,
+        }
+    }
 }
 
 impl fmt::Display for OwmUnit {

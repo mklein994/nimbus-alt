@@ -16,16 +16,6 @@ pub struct Config {
     pub owm: Option<OwmConfig>,
 }
 
-impl From<GenericWeatherUnit> for OwmUnit {
-    fn from(unit: GenericWeatherUnit) -> Self {
-        match unit {
-            GenericWeatherUnit::Metric => OwmUnit::Metric,
-            GenericWeatherUnit::Imperial => OwmUnit::Imperial,
-            GenericWeatherUnit::Si => OwmUnit::Si,
-        }
-    }
-}
-
 #[derive(Debug, Deserialize)]
 pub struct DarkSkyConfig {
     pub key: String,
