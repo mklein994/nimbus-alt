@@ -40,12 +40,12 @@ impl WeatherApi for OwmApi {
         config.owm.as_ref().map_or_else(
             || panic!("can't create an OwmApi without an api key."),
             |owm| Self {
-                key: owm.owm_api_key.to_string(),
-                location: match &owm.owm_location_id {
+                key: owm.key.to_string(),
+                location: match &owm.location_id {
                     Some(id) => Some(Location::Id(id.to_string())),
                     None => Some(Location::Coord(config.latitude, config.longitude)),
                 },
-                unit: owm.owm_unit.or_else(|| config.unit.map(OwmUnit::from)),
+                unit: owm.unit.or_else(|| config.unit.map(OwmUnit::from)),
             },
         )
     }

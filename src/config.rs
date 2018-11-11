@@ -28,15 +28,15 @@ impl From<GenericWeatherUnit> for OwmUnit {
 
 #[derive(Debug, Deserialize)]
 pub struct DarkSkyConfig {
-    pub darksky_api_key: String,
-    pub darksky_unit: Option<DarkSkyUnit>,
+    pub key: String,
+    pub unit: Option<DarkSkyUnit>,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct OwmConfig {
-    pub owm_api_key: String,
-    pub owm_location_id: Option<String>,
-    pub owm_unit: Option<OwmUnit>,
+    pub key: String,
+    pub location_id: Option<String>,
+    pub unit: Option<OwmUnit>,
 }
 
 impl Config {

@@ -56,11 +56,9 @@ impl WeatherApi for DarkSkyApi {
         config.darksky.as_ref().map_or_else(
             || panic!("Tried to create DarkSkyApi without api key."),
             |darksky| Self {
-                key: darksky.darksky_api_key.to_string(),
+                key: darksky.key.to_string(),
                 location: Location::Coord(config.latitude, config.longitude),
-                unit: darksky
-                    .darksky_unit
-                    .or_else(|| config.unit.map(DarkSkyUnit::from)),
+                unit: darksky.unit.or_else(|| config.unit.map(DarkSkyUnit::from)),
             },
         )
     }
