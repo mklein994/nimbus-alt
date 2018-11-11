@@ -1,6 +1,5 @@
 use super::Config;
 use super::GenericWeatherUnit;
-// use super::KeyNotFound;
 use super::{Location, WeatherApi};
 use serde_derive::Deserialize;
 use std::fmt;
