@@ -1,47 +1,10 @@
 use super::Config;
-use super::{GenericWeatherUnit, WeatherApi};
-use serde_derive::Deserialize;
-use std::fmt;
+use super::WeatherApi;
+use crate::config::DarkSkyUnit;
 use url::Url;
 
 #[derive(Debug)]
 pub struct DarkSkyApi;
-
-#[derive(Debug, PartialEq, Eq, Copy, Clone, Deserialize)]
-#[serde(rename_all = "lowercase")]
-pub enum DarkSkyUnit {
-    Auto,
-    Ca,
-    Si,
-    Uk2,
-    Us,
-}
-
-impl fmt::Display for DarkSkyUnit {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            match self {
-                DarkSkyUnit::Auto => "auto",
-                DarkSkyUnit::Ca => "ca",
-                DarkSkyUnit::Si => "si",
-                DarkSkyUnit::Uk2 => "uk2",
-                DarkSkyUnit::Us => "us",
-            }
-        )
-    }
-}
-
-impl From<GenericWeatherUnit> for DarkSkyUnit {
-    fn from(unit: GenericWeatherUnit) -> Self {
-        match unit {
-            GenericWeatherUnit::Metric => DarkSkyUnit::Si,
-            GenericWeatherUnit::Imperial => DarkSkyUnit::Us,
-            GenericWeatherUnit::Si => DarkSkyUnit::Si,
-        }
-    }
-}
 
 impl WeatherApi for DarkSkyApi {
     const BASE_URL: &'static str = "https://api.darksky.net/forecast";

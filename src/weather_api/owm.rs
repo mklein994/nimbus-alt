@@ -1,43 +1,10 @@
 use super::Config;
-use super::{GenericWeatherUnit, WeatherApi};
-use serde_derive::Deserialize;
-use std::fmt;
+use super::WeatherApi;
+use crate::config::OwmUnit;
 use url::Url;
 
 #[derive(Debug)]
 pub struct OwmApi;
-
-#[derive(Debug, PartialEq, Eq, Copy, Clone, Deserialize)]
-#[serde(rename_all = "lowercase")]
-pub enum OwmUnit {
-    Metric,
-    Imperial,
-    Si,
-}
-
-impl From<GenericWeatherUnit> for OwmUnit {
-    fn from(unit: GenericWeatherUnit) -> Self {
-        match unit {
-            GenericWeatherUnit::Metric => OwmUnit::Metric,
-            GenericWeatherUnit::Imperial => OwmUnit::Imperial,
-            GenericWeatherUnit::Si => OwmUnit::Si,
-        }
-    }
-}
-
-impl fmt::Display for OwmUnit {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            match self {
-                OwmUnit::Metric => "metric",
-                OwmUnit::Imperial => "imperial",
-                OwmUnit::Si => panic!("Can't print OWM SI unit"),
-            }
-        )
-    }
-}
 
 impl WeatherApi for OwmApi {
     const BASE_URL: &'static str = "http://api.openweathermap.org/data/2.5";
