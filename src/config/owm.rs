@@ -14,7 +14,6 @@ pub struct OwmConfig {
 pub enum OwmUnit {
     Metric,
     Imperial,
-    Si,
 }
 
 impl From<GenericWeatherUnit> for OwmUnit {
@@ -22,7 +21,6 @@ impl From<GenericWeatherUnit> for OwmUnit {
         match unit {
             GenericWeatherUnit::Metric => OwmUnit::Metric,
             GenericWeatherUnit::Imperial => OwmUnit::Imperial,
-            GenericWeatherUnit::Si => OwmUnit::Si,
         }
     }
 }
@@ -35,7 +33,6 @@ impl fmt::Display for OwmUnit {
             match self {
                 OwmUnit::Metric => "metric",
                 OwmUnit::Imperial => "imperial",
-                OwmUnit::Si => panic!("Can't print OWM SI unit"),
             }
         )
     }

@@ -10,7 +10,6 @@ pub mod owm;
 pub enum GenericWeatherUnit {
     Metric,
     Imperial,
-    Si,
 }
 
 pub trait WeatherApi: Sized {

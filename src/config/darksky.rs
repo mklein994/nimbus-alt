@@ -39,7 +39,6 @@ impl From<GenericWeatherUnit> for DarkSkyUnit {
         match unit {
             GenericWeatherUnit::Metric => DarkSkyUnit::Si,
             GenericWeatherUnit::Imperial => DarkSkyUnit::Us,
-            GenericWeatherUnit::Si => DarkSkyUnit::Si,
         }
     }
 }
