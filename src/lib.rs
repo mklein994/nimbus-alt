@@ -30,15 +30,13 @@ pub fn run(config: &Config) -> Result<(), Error> {
 
     let client = Client::builder().gzip(true).build()?;
 
-    client.get(owm_url).send().and_then(|mut r| {
-        trace!("OWM current conditions json: {}", r.text()?);
-        Ok(())
-    })?;
+    let owm_current_weather: serde_json::Value = client.get(owm_url).send()?.json()?;
+    info!("successfully retrieved owm current weather");
+    trace!("{}", owm_current_weather);
 
-    client.get(darksky_url).send().and_then(|mut r| {
-        trace!("DarkSky current conditions json: {}", r.text()?);
-        Ok(())
-    })?;
+    let darksky_current_weather: serde_json::Value = client.get(darksky_url).send()?.json()?;
+    info!("successfully retrieved darksky current weather");
+    trace!("{}", darksky_current_weather);
 
     Ok(())
 }
