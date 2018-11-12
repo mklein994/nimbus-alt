@@ -46,7 +46,7 @@ impl Config {
 
 #[derive(Fail, Debug)]
 #[fail(
-    display = "Could not determine the location. Ensure that a location is\
+    display = "Could not determine the location. Ensure that a location is \
                specified in the configuration."
 )]
 pub struct LocationMissingError;
