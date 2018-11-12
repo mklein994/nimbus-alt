@@ -72,8 +72,11 @@ mod tests {
 
         let api = DarkSkyApi::new(&config);
 
-        let expected_url =
-            Url::parse("https://api.darksky.net/forecast/my_key/12.345,-54.321?units=uk2").unwrap();
+        let expected_url = Url::parse(
+            "https://api.darksky.net/forecast/my_key/12.345,-54.321?\
+             units=uk2",
+        )
+        .unwrap();
         assert_eq!(DarkSkyApi { url: expected_url }, api);
     }
 }

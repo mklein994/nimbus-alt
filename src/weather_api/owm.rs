@@ -64,9 +64,11 @@ mod tests {
 
         let api = OwmApi::new(&config);
 
-        let expected_url =
-            Url::parse("https://api.openweathermap.org/data/2.5/weather?appid=owm_key&id=a1b2c3d4")
-                .unwrap();
+        let expected_url = Url::parse(
+            "https://api.openweathermap.org/data/2.5/weather?\
+             appid=owm_key&id=a1b2c3d4",
+        )
+        .unwrap();
         assert_eq!(OwmApi { url: expected_url }, api);
     }
 
@@ -83,7 +85,11 @@ mod tests {
 
         let api = OwmApi::new(&config);
 
-        let expected_url = Url::parse("https://api.openweathermap.org/data/2.5/weather?appid=owm_key&id=a1b2c3d4&units=imperial").unwrap();
+        let expected_url = Url::parse(
+            "https://api.openweathermap.org/data/2.5/weather?\
+             appid=owm_key&id=a1b2c3d4&units=imperial",
+        )
+        .unwrap();
         assert_eq!(OwmApi { url: expected_url }, api);
     }
 
@@ -101,7 +107,8 @@ mod tests {
         let api = OwmApi::new(&config);
 
         let expected_url = Url::parse(
-            "https://api.openweathermap.org/data/2.5/weather?appid=owm_key&lat=12.345&lon=-54.321",
+            "https://api.openweathermap.org/data/2.5/weather?\
+             appid=owm_key&lat=12.345&lon=-54.321",
         )
         .unwrap();
         assert_eq!(OwmApi { url: expected_url }, api);
@@ -121,7 +128,11 @@ mod tests {
 
         let api = OwmApi::new(&config);
 
-        let expected_url = Url::parse("https://api.openweathermap.org/data/2.5/weather?appid=owm_key&lat=12.345&lon=-54.321&units=metric").unwrap();
+        let expected_url = Url::parse(
+            "https://api.openweathermap.org/data/2.5/weather?\
+             appid=owm_key&lat=12.345&lon=-54.321&units=metric",
+        )
+        .unwrap();
         assert_eq!(OwmApi { url: expected_url }, api);
     }
 
