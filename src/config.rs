@@ -12,6 +12,7 @@ pub use self::darksky_config::*;
 pub use self::owm_config::*;
 
 #[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct Config {
     pub coordinates: Option<(f64, f64)>,
     pub unit: Option<GenericWeatherUnit>,

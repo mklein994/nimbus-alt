@@ -3,6 +3,7 @@ use serde_derive::Deserialize;
 use std::fmt;
 
 #[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct OwmConfig {
     pub key: String,
     pub location_id: Option<String>,
