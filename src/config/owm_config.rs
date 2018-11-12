@@ -1,4 +1,4 @@
-use crate::GenericWeatherUnit;
+use super::GenericWeatherUnit;
 use serde_derive::Deserialize;
 use std::fmt;
 

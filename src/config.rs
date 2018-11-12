@@ -1,4 +1,3 @@
-use crate::weather_api::GenericWeatherUnit;
 use crate::Error;
 use failure::{Fail, ResultExt};
 use serde_derive::Deserialize;
@@ -10,6 +9,13 @@ mod owm_config;
 
 pub use self::darksky_config::*;
 pub use self::owm_config::*;
+
+#[derive(Debug, Deserialize, Copy, Clone)]
+#[serde(rename_all = "lowercase")]
+pub enum GenericWeatherUnit {
+    Metric,
+    Imperial,
+}
 
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields)]

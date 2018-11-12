@@ -7,7 +7,6 @@ mod weather_api;
 pub use self::config::*;
 use self::weather_api::darksky::DarkSkyApi;
 use self::weather_api::owm::OwmApi;
-pub use self::weather_api::GenericWeatherUnit;
 use self::weather_api::WeatherApi;
 use failure::Error;
 use reqwest::Client;
