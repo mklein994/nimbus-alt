@@ -4,45 +4,68 @@ use crate::config::OwmUnit;
 use url::Url;
 
 #[derive(Debug, PartialEq)]
-pub struct OwmApi {
+pub struct OwmApi<'a> {
     pub url: Url,
+    pub key: &'a str,
+    pub location: Location<'a>,
+    pub unit: Option<OwmUnit>,
 }
 
-impl WeatherApi for OwmApi {
+#[derive(Debug, PartialEq)]
+pub enum Location<'a> {
+    Id(&'a str),
+    Coord(f64, f64),
+}
+
+impl<'a, 'c: 'a> WeatherApi<'c> for OwmApi<'a> {
     const BASE_URL: &'static str = "https://api.openweathermap.org/data/2.5";
 
-    fn new(config: &Config) -> Self {
-        config.owm.as_ref().map_or_else(
-            || panic!("Tried to create OwmApi without api key."),
-            |owm| {
-                let mut url = Url::parse_with_params(
-                    &format!("{}/weather", Self::BASE_URL),
-                    &[("appid", &owm.key)],
-                )
-                .unwrap();
+    fn new(config: &'c Config) -> Self {
+        let owm = config
+            .owm
+            .as_ref()
+            .unwrap_or_else(|| panic!("Tried to create OwmApi without api key."));
 
-                // NOTE: There must always be a location.
-                if let Some(id) = &owm.location_id {
-                    url.query_pairs_mut().append_pair("id", id).finish();
-                } else if let Some((lat, lon)) = config.coordinates {
-                    url.query_pairs_mut()
-                        .extend_pairs(&[("lat", lat.to_string()), ("lon", lon.to_string())])
-                        .finish();
-                } else {
-                    panic!("location required. May be coordinates or a location id.");
-                }
-
-                // Determine the unit by checking the owm-specific config first, then the global
-                // one. The default is to leave it blank.
-                if let Some(unit) = owm.unit.or_else(|| config.unit.map(OwmUnit::from)) {
-                    url.query_pairs_mut()
-                        .append_pair("units", &unit.to_string())
-                        .finish();
-                }
-
-                Self { url }
-            },
+        let mut url = Url::parse_with_params(
+            &format!("{}/weather", Self::BASE_URL),
+            &[("appid", &owm.key)],
         )
+        .unwrap();
+
+        let key: &str = &owm.key;
+
+        let location: Location = if let Some(ref id) = owm.location_id {
+            Location::Id(id)
+        } else if let Some((lat, lon)) = config.coordinates {
+            Location::Coord(lat, lon)
+        } else {
+            panic!("location required. May be coordinates or a location id.");
+        };
+
+        // NOTE: There must always be a location.
+        let location_query = match location {
+            Location::Id(id) => vec![("id", id.to_string())],
+            Location::Coord(lat, lon) => vec![("lat", lat.to_string()), ("lon", lon.to_string())],
+        };
+
+        url.query_pairs_mut().extend_pairs(location_query).finish();
+
+        let unit: Option<OwmUnit> = owm.unit.or_else(|| config.unit.map(OwmUnit::from));
+
+        // Determine the unit by checking the owm-specific config first, then the global
+        // one. The default is to leave it blank.
+        if let Some(unit) = owm.unit.or_else(|| config.unit.map(OwmUnit::from)) {
+            url.query_pairs_mut()
+                .append_pair("units", &unit.to_string())
+                .finish();
+        }
+
+        Self {
+            key,
+            location,
+            unit,
+            url,
+        }
     }
 }
 
@@ -50,6 +73,17 @@ impl WeatherApi for OwmApi {
 mod tests {
     use super::*;
     use crate::config::{Config, OwmConfig};
+
+    impl<'a> Default for OwmApi<'a> {
+        fn default() -> Self {
+            Self {
+                key: "",
+                location: Location::Id(""),
+                unit: None,
+                url: Url::parse("https://example.com").unwrap(),
+            }
+        }
+    }
 
     #[test]
     fn it_creates_a_new_owm_api_with_only_location_id() {
@@ -69,7 +103,15 @@ mod tests {
              appid=owm_key&id=a1b2c3d4",
         )
         .unwrap();
-        assert_eq!(OwmApi { url: expected_url }, api);
+        assert_eq!(
+            OwmApi {
+                url: expected_url,
+                key: "owm_key",
+                location: Location::Id("a1b2c3d4"),
+                unit: None,
+            },
+            api
+        );
     }
 
     #[test]
@@ -90,7 +132,15 @@ mod tests {
              appid=owm_key&id=a1b2c3d4&units=imperial",
         )
         .unwrap();
-        assert_eq!(OwmApi { url: expected_url }, api);
+        assert_eq!(
+            OwmApi {
+                key: "owm_key",
+                location: Location::Id("a1b2c3d4"),
+                unit: Some(OwmUnit::Imperial),
+                url: expected_url,
+            },
+            api
+        );
     }
 
     #[test]
@@ -111,7 +161,15 @@ mod tests {
              appid=owm_key&lat=12.345&lon=-54.321",
         )
         .unwrap();
-        assert_eq!(OwmApi { url: expected_url }, api);
+        assert_eq!(
+            OwmApi {
+                key: "owm_key",
+                location: Location::Coord(12.345, -54.321),
+                unit: None,
+                url: expected_url,
+            },
+            api
+        );
     }
 
     #[test]
@@ -133,7 +191,16 @@ mod tests {
              appid=owm_key&lat=12.345&lon=-54.321&units=metric",
         )
         .unwrap();
-        assert_eq!(OwmApi { url: expected_url }, api);
+        assert_eq!(
+            OwmApi {
+                key: "owm_key",
+                location: Location::Coord(12.345, -54.321),
+                unit: Some(OwmUnit::Metric),
+                url: expected_url,
+                ..Default::default()
+            },
+            api
+        );
     }
 
     #[test]

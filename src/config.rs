@@ -47,6 +47,10 @@ impl Config {
             }
         }
 
+        if config.darksky.is_none() && config.coordinates.is_none() {
+            return Err(LocationMissingError.into());
+        }
+
         Ok(config)
     }
 }
