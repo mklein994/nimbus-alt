@@ -17,10 +17,14 @@ pub fn run(config: &Config) -> Result<(), Error> {
     debug!("{:?}", config);
 
     let owm = OwmApi::new(&config);
-    info!("owm url: {}", owm.url);
+    info!("{:?}", owm);
+    let owm_url = owm.url();
+    info!("owm url: {}", owm_url);
 
     let darksky = DarkSkyApi::new(&config);
-    info!("darksky url: {}", darksky.url);
+    info!("{:?}", darksky);
+    let darksky_url = darksky.url();
+    info!("darksky url: {}", darksky_url);
 
     // TODO: remove this feature once testing is setup
     if cfg!(feature = "live") == false {
@@ -29,11 +33,11 @@ pub fn run(config: &Config) -> Result<(), Error> {
 
     let client = Client::builder().gzip(true).build()?;
 
-    let owm_current_weather: serde_json::Value = client.get(owm.url).send()?.json()?;
+    let owm_current_weather: serde_json::Value = client.get(owm_url).send()?.json()?;
     info!("successfully retrieved owm current weather");
     trace!("{}", owm_current_weather);
 
-    let darksky_current_weather: serde_json::Value = client.get(darksky.url).send()?.json()?;
+    let darksky_current_weather: serde_json::Value = client.get(darksky_url).send()?.json()?;
     info!("successfully retrieved darksky current weather");
     trace!("{}", darksky_current_weather);
 

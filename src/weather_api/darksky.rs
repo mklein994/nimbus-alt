@@ -5,7 +5,6 @@ use url::Url;
 
 #[derive(Debug, PartialEq)]
 pub struct DarkSkyApi<'a> {
-    pub url: Url,
     pub key: &'a str,
     pub coordinates: (f64, f64),
     pub unit: Option<DarkSkyUnit>,
@@ -20,37 +19,38 @@ impl<'a, 'c: 'a> WeatherApi<'c> for DarkSkyApi<'a> {
             .as_ref()
             .unwrap_or_else(|| panic!("Tried to create DarkSkyApi without api key."));
 
-        let mut url = Url::parse(Self::BASE_URL).unwrap();
-
         let key: &str = &darksky.key;
 
         let (latitude, longitude) = config
             .coordinates
             .expect("tried creating darksky api without coordinates in config");
 
-        let (lat, lon) = config
-            .coordinates
-            .map(|(lat, lon)| (lat.to_string(), lon.to_string()))
-            .unwrap();
-
-        url.path_segments_mut()
-            .unwrap()
-            .push(&darksky.key)
-            .push(&format!("{},{}", lat, lon));
-
         let unit: Option<DarkSkyUnit> = darksky.unit.or_else(|| config.unit.map(DarkSkyUnit::from));
-
-        if let Some(unit) = unit {
-            url.query_pairs_mut()
-                .append_pair("units", &unit.to_string());
-        }
 
         Self {
             key,
             coordinates: (latitude, longitude),
             unit,
-            url,
         }
+    }
+
+    fn url(self) -> Url {
+        let mut url = Url::parse(&format!(
+            "{base}/{key}/{lat},{lon}",
+            base = Self::BASE_URL,
+            key = self.key,
+            lat = self.coordinates.0.to_string(),
+            lon = self.coordinates.1.to_string()
+        ))
+        .unwrap();
+
+        if let Some(unit) = self.unit {
+            url.query_pairs_mut()
+                .append_pair("units", &unit.to_string())
+                .finish();
+        }
+
+        url
     }
 }
 
@@ -79,10 +79,10 @@ mod tests {
                 key: "my_key",
                 coordinates: (12.345, -54.321),
                 unit: None,
-                url: expected_url
             },
             api
         );
+        assert_eq!(expected_url, api.url());
     }
 
     #[test]
@@ -108,9 +108,9 @@ mod tests {
                 key: "my_key",
                 coordinates: (12.345, -54.321),
                 unit: Some(DarkSkyUnit::Uk2),
-                url: expected_url
             },
             api
         );
+        assert_eq!(expected_url, api.url());
     }
 }
