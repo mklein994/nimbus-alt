@@ -33,11 +33,11 @@ pub fn run(config: &Config) -> Result<(), Error> {
 
     let client = Client::builder().gzip(true).build()?;
 
-    let owm_current_weather: serde_json::Value = client.get(owm_url).send()?.json()?;
+    let owm_current_weather: serde_json::Value = owm.current(&client)?;
     info!("successfully retrieved owm current weather");
     trace!("{}", owm_current_weather);
 
-    let darksky_current_weather: serde_json::Value = client.get(darksky_url).send()?.json()?;
+    let darksky_current_weather: serde_json::Value = darksky.current(&client)?;
     info!("successfully retrieved darksky current weather");
     trace!("{}", darksky_current_weather);
 

@@ -34,7 +34,7 @@ impl<'a, 'c: 'a> WeatherApi<'c> for DarkSkyApi<'a> {
         }
     }
 
-    fn url(self) -> Url {
+    fn url(&self) -> Url {
         let mut url = Url::parse(&format!(
             "{base}/{key}/{lat},{lon}",
             base = Self::BASE_URL,

@@ -45,7 +45,7 @@ impl<'a, 'c: 'a> WeatherApi<'c> for OwmApi<'a> {
         }
     }
 
-    fn url(self) -> Url {
+    fn url(&self) -> Url {
         let mut url = Url::parse_with_params(
             &format!("{}/weather", Self::BASE_URL),
             &[("appid", self.key)],
