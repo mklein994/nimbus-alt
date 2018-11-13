@@ -198,7 +198,6 @@ mod tests {
                 key: "owm_key",
                 location: Location::Coord(12.345, -54.321),
                 unit: Some(OwmUnit::Metric),
-                ..Default::default()
             },
             api
         );
