@@ -128,4 +128,23 @@ mod tests {
         );
         assert_eq!(expected_url, api.url());
     }
+
+    #[test]
+    fn it_gets_darksky_historical_weather() {
+        let api = DarkSkyApi {
+            key: "my_key",
+            coordinates: (12.345, -54.321),
+            unit: None,
+        };
+        let time = 1542143061;
+
+        let expected_url = Url::parse(&format!(
+            "https://api.darksky.net/forecast/my_key/12.345,-54.321,{}",
+            time
+        ))
+        .unwrap();
+        let actual_url = api.historical_url(time);
+
+        assert_eq!(expected_url, actual_url);
+    }
 }
