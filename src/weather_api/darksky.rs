@@ -1,5 +1,5 @@
 use super::Config;
-use super::WeatherApi;
+use super::{Historical, WeatherApi};
 use crate::config::DarkSkyUnit;
 use url::Url;
 
@@ -49,6 +49,21 @@ impl<'a, 'c: 'a> WeatherApi<'c> for DarkSkyApi<'a> {
                 .append_pair("units", &unit.to_string())
                 .finish();
         }
+
+        url
+    }
+}
+
+impl<'a> Historical<'a> for DarkSkyApi<'a> {
+    fn historical_url(&self, time: i64) -> Url {
+        let mut url = self.url();
+
+        url.path_segments_mut().unwrap().pop().push(&format!(
+            "{lat},{lon},{time}",
+            lat = self.coordinates.0,
+            lon = self.coordinates.1,
+            time = time
+        ));
 
         url
     }

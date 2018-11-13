@@ -7,7 +7,7 @@ mod weather_api;
 pub use self::config::*;
 use self::weather_api::darksky::DarkSkyApi;
 use self::weather_api::owm::OwmApi;
-use self::weather_api::WeatherApi;
+use self::weather_api::{Historical, WeatherApi};
 use failure::Error;
 use reqwest::Client;
 
@@ -40,6 +40,13 @@ pub fn run(config: &Config) -> Result<(), Error> {
     let darksky_current_weather: serde_json::Value = darksky.current(&client)?;
     info!("successfully retrieved darksky current weather");
     trace!("{}", darksky_current_weather);
+
+    if let Some(time) = std::env::args().nth(1) {
+        let time = time.parse::<i64>()?;
+        let darksky_historical_weather: serde_json::Value = darksky.historical(&client, time)?;
+        info!("successfully retrieved darksky historical weather");
+        trace!("{}", darksky_historical_weather);
+    }
 
     Ok(())
 }
