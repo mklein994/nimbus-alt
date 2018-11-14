@@ -3,6 +3,7 @@ use serde_derive::Deserialize;
 use std::str::FromStr;
 
 #[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct Forecast {
     coord: Option<Coord>,
     weather: Option<Vec<Weather>>,
@@ -22,12 +23,14 @@ pub struct Forecast {
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct Coord {
     lat: f64,
     lon: f64,
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct Weather {
     id: Option<i32>,
     description: Option<String>,
@@ -36,6 +39,7 @@ pub struct Weather {
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct Icon(String);
 
 #[derive(Fail, Debug)]
@@ -50,6 +54,7 @@ impl FromStr for Icon {
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct Main {
     temp: Option<f64>,
     pressure: Option<i32>,
@@ -61,29 +66,34 @@ pub struct Main {
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct Wind {
     speed: Option<f64>,
     deg: Option<u32>,
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct Clouds {
     all: Option<i32>,
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct Rain {
     #[serde(rename = "3h")]
     three_h: Option<f64>,
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct Snow {
     #[serde(rename = "3h")]
     three_h: Option<f64>,
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct Sys {
     #[serde(rename = "type")]
     // internal
