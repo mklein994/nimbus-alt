@@ -60,8 +60,8 @@ pub struct Main {
     temp: Option<f64>,
     pressure: Option<i32>,
     humidity: Option<i32>,
-    temp_min: Option<i32>,
-    temp_max: Option<i32>,
+    temp_min: Option<f64>,
+    temp_max: Option<f64>,
     sea_level: Option<i32>,
     grnd_level: Option<i32>,
 }
