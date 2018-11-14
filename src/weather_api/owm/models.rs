@@ -58,19 +58,21 @@ impl FromStr for Icon {
 #[serde(deny_unknown_fields)]
 pub struct Main {
     temp: Option<f64>,
-    pressure: Option<i32>,
-    humidity: Option<i32>,
+    // internal
+    temp_kf: Option<f64>,
+    pressure: Option<f64>,
+    humidity: Option<f64>,
     temp_min: Option<f64>,
     temp_max: Option<f64>,
-    sea_level: Option<i32>,
-    grnd_level: Option<i32>,
+    sea_level: Option<f64>,
+    grnd_level: Option<f64>,
 }
 
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct Wind {
     speed: Option<f64>,
-    deg: Option<u32>,
+    deg: Option<f64>,
     gust: Option<f64>,
 }
 
