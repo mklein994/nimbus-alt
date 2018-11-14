@@ -1,11 +1,11 @@
 use super::Config;
-use super::WeatherApi;
+use super::{ForecastApi, WeatherApi};
 use crate::config::OwmUnit;
 use url::Url;
 
 mod models;
 
-pub use self::models::Forecast;
+pub use self::models::{Current, Forecast};
 
 #[derive(Debug, PartialEq)]
 pub struct OwmApi<'a> {
@@ -22,7 +22,7 @@ pub enum Location<'a> {
 
 impl<'a, 'c: 'a> WeatherApi<'c> for OwmApi<'a> {
     const BASE_URL: &'static str = "https://api.openweathermap.org/data/2.5";
-    type Current = Forecast;
+    type Current = Current;
 
     fn new(config: &'c Config) -> Self {
         let owm = config
@@ -72,6 +72,17 @@ impl<'a, 'c: 'a> WeatherApi<'c> for OwmApi<'a> {
                 .append_pair("units", &unit.to_string())
                 .finish();
         }
+
+        url
+    }
+}
+
+impl<'a, 'f: 'a> ForecastApi<'f> for OwmApi<'a> {
+    type Forecast = Forecast;
+
+    fn forecast_url(&self) -> Url {
+        let mut url = self.url();
+        url.path_segments_mut().unwrap().pop().push("forecast");
 
         url
     }

@@ -4,7 +4,7 @@ use std::str::FromStr;
 
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
-pub struct Forecast {
+pub struct Current {
     coord: Option<Coord>,
     weather: Option<Vec<Weather>>,
     // internal
@@ -107,4 +107,46 @@ pub struct Sys {
     country: Option<String>,
     sunrise: Option<i64>,
     sunset: Option<i64>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct Forecast {
+    city: Option<ForecastCity>,
+    cnt: Option<i32>,
+    // internal
+    cod: Option<String>,
+    list: Option<Vec<ForecastList>>,
+    // internal
+    message: Option<f64>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ForecastCity {
+    coord: Option<Coord>,
+    country: Option<String>,
+    id: Option<i32>,
+    name: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ForecastList {
+    clouds: Option<Clouds>,
+    dt: Option<i64>,
+    dt_txt: Option<String>,
+    main: Option<Main>,
+    // not documented
+    sys: Option<ForecastSys>,
+    rain: Option<Rain>,
+    snow: Option<Snow>,
+    weather: Option<Vec<Weather>>,
+    wind: Option<Wind>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ForecastSys {
+    pod: Option<String>,
 }
