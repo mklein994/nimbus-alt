@@ -7,7 +7,7 @@ mod weather_api;
 pub use self::config::*;
 use self::weather_api::darksky::DarkSkyApi;
 use self::weather_api::owm::OwmApi;
-use self::weather_api::{Historical, WeatherApi};
+use self::weather_api::{ForecastApi, Historical, WeatherApi};
 use failure::Error;
 use reqwest::Client;
 
@@ -36,6 +36,11 @@ pub fn run(config: &Config) -> Result<(), Error> {
     let owm_current_weather = owm.current(&client)?;
     info!("successfully retrieved owm current weather");
     trace!("{:?}", owm_current_weather);
+
+    trace!("owm forecast url: {}", owm.forecast_url());
+    let owm_forecast_weather = owm.forecast(&client)?;
+    info!("successfully retrieved owm forecast weather");
+    trace!("{:?}", owm_forecast_weather);
 
     let darksky_current_weather = darksky.current(&client)?;
     info!("successfully retrieved darksky current weather");
