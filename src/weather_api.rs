@@ -6,7 +6,7 @@ use url::Url;
 pub mod darksky;
 pub mod owm;
 
-pub trait WeatherApi<'a>: Sized {
+pub trait WeatherApi<'a> {
     const BASE_URL: &'static str;
     type Current: std::fmt::Debug + serde::de::DeserializeOwned;
 
