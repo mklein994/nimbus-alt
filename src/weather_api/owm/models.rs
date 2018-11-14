@@ -10,6 +10,7 @@ pub struct Forecast {
     // internal
     base: Option<String>,
     main: Option<Main>,
+    visibility: Option<i32>,
     wind: Option<Wind>,
     clouds: Option<Clouds>,
     rain: Option<Rain>,
@@ -70,6 +71,7 @@ pub struct Main {
 pub struct Wind {
     speed: Option<f64>,
     deg: Option<u32>,
+    gust: Option<f64>,
 }
 
 #[derive(Debug, Deserialize)]
