@@ -8,13 +8,13 @@ mod models;
 pub use self::models::Forecast;
 
 #[derive(Debug, PartialEq)]
-pub struct DarkSkyApi<'a> {
+pub struct DarkSky<'a> {
     pub key: &'a str,
     pub coordinates: (f64, f64),
     pub unit: Option<DarkSkyUnit>,
 }
 
-impl<'a, 'c: 'a> WeatherApi<'c> for DarkSkyApi<'a> {
+impl<'a, 'c: 'a> WeatherApi<'c> for DarkSky<'a> {
     const BASE_URL: &'static str = "https://api.darksky.net/forecast";
     type Current = Forecast;
 
@@ -22,7 +22,7 @@ impl<'a, 'c: 'a> WeatherApi<'c> for DarkSkyApi<'a> {
         let darksky = config
             .darksky
             .as_ref()
-            .unwrap_or_else(|| panic!("Tried to create DarkSkyApi without api key."));
+            .unwrap_or_else(|| panic!("Tried to create DarkSky without api key."));
 
         let key: &str = &darksky.key;
 
@@ -59,7 +59,7 @@ impl<'a, 'c: 'a> WeatherApi<'c> for DarkSkyApi<'a> {
     }
 }
 
-impl<'a> Historical<'a> for DarkSkyApi<'a> {
+impl<'a> Historical<'a> for DarkSky<'a> {
     fn historical_url(&self, time: i64) -> Url {
         let mut url = self.url();
 
@@ -80,7 +80,7 @@ mod tests {
     use crate::config::{Config, DarkSkyConfig};
 
     #[test]
-    fn it_creates_new_darksky_api_with_coordinates() {
+    fn it_creates_new_darksky_with_coordinates() {
         let config = Config {
             coordinates: Some((12.345, -54.321)),
             darksky: Some(DarkSkyConfig {
@@ -90,12 +90,12 @@ mod tests {
             ..Default::default()
         };
 
-        let api = DarkSkyApi::new(&config);
+        let api = DarkSky::new(&config);
 
         let expected_url =
             Url::parse("https://api.darksky.net/forecast/my_key/12.345,-54.321").unwrap();
         assert_eq!(
-            DarkSkyApi {
+            DarkSky {
                 key: "my_key",
                 coordinates: (12.345, -54.321),
                 unit: None,
@@ -106,7 +106,7 @@ mod tests {
     }
 
     #[test]
-    fn it_creates_new_darksky_api_with_darksky_unit() {
+    fn it_creates_new_darksky_with_darksky_unit() {
         let config = Config {
             coordinates: Some((12.345, -54.321)),
             darksky: Some(DarkSkyConfig {
@@ -116,7 +116,7 @@ mod tests {
             ..Default::default()
         };
 
-        let api = DarkSkyApi::new(&config);
+        let api = DarkSky::new(&config);
 
         let expected_url = Url::parse(
             "https://api.darksky.net/forecast/my_key/12.345,-54.321?\
@@ -124,7 +124,7 @@ mod tests {
         )
         .unwrap();
         assert_eq!(
-            DarkSkyApi {
+            DarkSky {
                 key: "my_key",
                 coordinates: (12.345, -54.321),
                 unit: Some(DarkSkyUnit::Uk2),
@@ -136,7 +136,7 @@ mod tests {
 
     #[test]
     fn it_gets_darksky_historical_weather() {
-        let api = DarkSkyApi {
+        let api = DarkSky {
             key: "my_key",
             coordinates: (12.345, -54.321),
             unit: None,

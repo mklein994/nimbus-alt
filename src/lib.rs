@@ -5,7 +5,7 @@ mod config;
 mod weather_api;
 
 pub use self::config::*;
-use self::weather_api::darksky::DarkSkyApi;
+use self::weather_api::darksky::DarkSky;
 use self::weather_api::owm::Owm;
 use self::weather_api::{ForecastApi, Historical, WeatherApi};
 use failure::Error;
@@ -21,7 +21,7 @@ pub fn run(config: &Config) -> Result<(), Error> {
     let owm_url = owm.url();
     info!("owm url: {}", owm_url);
 
-    let darksky = DarkSkyApi::new(&config);
+    let darksky = DarkSky::new(&config);
     info!("{:?}", darksky);
     let darksky_url = darksky.url();
     info!("darksky url: {}", darksky_url);
