@@ -19,7 +19,7 @@ pub trait WeatherApi<'a> {
     }
 }
 
-pub trait Historical<'a>: WeatherApi<'a> {
+pub trait HistoricalApi<'a>: WeatherApi<'a> {
     fn historical_url(&self, time: i64) -> Url;
 
     fn historical(&self, client: &Client, time: i64) -> Result<serde_json::Value, Error> {
