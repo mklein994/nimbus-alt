@@ -33,9 +33,9 @@ pub fn run(config: &Config) -> Result<(), Error> {
 
     let client = Client::builder().gzip(true).build()?;
 
-    // let owm_current_weather = owm.current(&client)?;
-    // info!("successfully retrieved owm current weather");
-    // trace!("{:?}", owm_current_weather);
+    let owm_current_weather = owm.current(&client)?;
+    info!("successfully retrieved owm current weather");
+    trace!("{:?}", owm_current_weather);
 
     let darksky_current_weather = darksky.current(&client)?;
     info!("successfully retrieved darksky current weather");
