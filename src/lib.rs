@@ -33,13 +33,13 @@ pub fn run(config: &Config) -> Result<(), Error> {
 
     let client = Client::builder().gzip(true).build()?;
 
-    let owm_current_weather: serde_json::Value = owm.current(&client)?;
-    info!("successfully retrieved owm current weather");
-    trace!("{}", owm_current_weather);
+    // let owm_current_weather = owm.current(&client)?;
+    // info!("successfully retrieved owm current weather");
+    // trace!("{:?}", owm_current_weather);
 
-    let darksky_current_weather: serde_json::Value = darksky.current(&client)?;
+    let darksky_current_weather = darksky.current(&client)?;
     info!("successfully retrieved darksky current weather");
-    trace!("{}", darksky_current_weather);
+    trace!("{:?}", darksky_current_weather);
 
     if let Some(time) = std::env::args().nth(1) {
         let time = time.parse::<i64>()?;

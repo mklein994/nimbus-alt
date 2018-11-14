@@ -1,6 +1,7 @@
 use super::Config;
 use super::WeatherApi;
 use crate::config::OwmUnit;
+use serde_derive::Deserialize;
 use url::Url;
 
 #[derive(Debug, PartialEq)]
@@ -16,8 +17,12 @@ pub enum Location<'a> {
     Coord(f64, f64),
 }
 
+#[derive(Debug, Deserialize)]
+pub struct OwmCurrent;
+
 impl<'a, 'c: 'a> WeatherApi<'c> for OwmApi<'a> {
     const BASE_URL: &'static str = "https://api.openweathermap.org/data/2.5";
+    type Current = OwmCurrent;
 
     fn new(config: &'c Config) -> Self {
         let owm = config

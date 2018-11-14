@@ -3,6 +3,10 @@ use super::{Historical, WeatherApi};
 use crate::config::DarkSkyUnit;
 use url::Url;
 
+mod models;
+
+pub use self::models::Forecast;
+
 #[derive(Debug, PartialEq)]
 pub struct DarkSkyApi<'a> {
     pub key: &'a str,
@@ -12,6 +16,7 @@ pub struct DarkSkyApi<'a> {
 
 impl<'a, 'c: 'a> WeatherApi<'c> for DarkSkyApi<'a> {
     const BASE_URL: &'static str = "https://api.darksky.net/forecast";
+    type Current = Forecast;
 
     fn new(config: &'a Config) -> Self {
         let darksky = config

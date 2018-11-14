@@ -8,10 +8,11 @@ pub mod owm;
 
 pub trait WeatherApi<'a>: Sized {
     const BASE_URL: &'static str;
+    type Current: std::fmt::Debug + serde::de::DeserializeOwned;
 
     fn new(config: &'a Config) -> Self;
     fn url(&self) -> Url;
-    fn current(&self, client: &Client) -> Result<serde_json::Value, Error> {
+    fn current(&self, client: &Client) -> Result<Self::Current, Error> {
         client.get(self.url()).send()?.json().map_err(Error::from)
     }
 }
