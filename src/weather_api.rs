@@ -1,6 +1,8 @@
 use super::Config;
 use failure::Error;
 use reqwest::Client;
+use serde::de::DeserializeOwned;
+use std::fmt;
 use url::Url;
 
 pub mod darksky;
@@ -8,7 +10,7 @@ pub mod owm;
 
 pub trait WeatherApi<'a> {
     const BASE_URL: &'static str;
-    type Current: std::fmt::Debug + serde::de::DeserializeOwned;
+    type Current: std::fmt::Debug + DeserializeOwned;
 
     fn new(config: &'a Config) -> Self;
     fn url(&self) -> Url;
