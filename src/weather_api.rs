@@ -30,3 +30,17 @@ pub trait Historical<'a>: WeatherApi<'a> {
             .map_err(Error::from)
     }
 }
+
+pub trait ForecastApi<'a>: WeatherApi<'a> {
+    type Forecast: fmt::Debug + DeserializeOwned;
+
+    fn forecast_url(&self) -> Url;
+
+    fn forecast(&self, client: &Client) -> Result<Self::Forecast, Error> {
+        client
+            .get(self.forecast_url())
+            .send()?
+            .json()
+            .map_err(Error::from)
+    }
+}
