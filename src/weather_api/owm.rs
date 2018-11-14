@@ -33,7 +33,7 @@ impl<'a, 'c: 'a> WeatherApi<'c> for Owm<'a> {
         let key: &str = &owm.key;
 
         // NOTE: There must always be a location.
-        let location: Location = if let Some(ref id) = owm.location_id {
+        let location = if let Some(ref id) = owm.location_id {
             Location::Id(id)
         } else if let Some((lat, lon)) = config.coordinates {
             Location::Coord(lat, lon)
@@ -41,7 +41,7 @@ impl<'a, 'c: 'a> WeatherApi<'c> for Owm<'a> {
             panic!("location required. May be coordinates or a location id.");
         };
 
-        let unit: Option<OwmUnit> = owm.unit.or_else(|| config.unit.map(OwmUnit::from));
+        let unit = owm.unit.or_else(|| config.unit.map(OwmUnit::from));
 
         Self {
             key,
