@@ -6,7 +6,7 @@ mod weather_api;
 
 pub use self::config::*;
 use self::weather_api::darksky::DarkSkyApi;
-use self::weather_api::owm::OwmApi;
+use self::weather_api::owm::Owm;
 use self::weather_api::{ForecastApi, Historical, WeatherApi};
 use failure::Error;
 use reqwest::Client;
@@ -16,7 +16,7 @@ pub fn run(config: &Config) -> Result<(), Error> {
     info!("logging enabled");
     debug!("{:?}", config);
 
-    let owm = OwmApi::new(&config);
+    let owm = Owm::new(&config);
     info!("{:?}", owm);
     let owm_url = owm.url();
     info!("owm url: {}", owm_url);
