@@ -130,6 +130,7 @@ pub struct ForecastCity {
     country: Option<String>,
     id: Option<i32>,
     name: Option<String>,
+    population: Option<i32>,
 }
 
 #[derive(Debug, Deserialize)]

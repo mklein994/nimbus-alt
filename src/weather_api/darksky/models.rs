@@ -102,6 +102,8 @@ pub struct Flags {
     darksky_unavailable: Option<String>,
     nearest_station: Option<f64>,
     sources: Vec<String>,
+    // undocumented
+    meteoalarm_license: Option<String>,
     units: DarkSkyUnit,
 }
 
