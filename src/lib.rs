@@ -31,8 +31,8 @@ pub fn run(config: &Config, matches: &ArgMatches) -> Result<(), Error> {
     let darksky_url = darksky.url();
     info!("darksky url: {}", darksky_url);
 
-    // TODO: remove this feature once testing is setup
-    if cfg!(feature = "live") == false {
+    // TODO: maybe remove this flag once testing is setup
+    if matches.is_present("live") == false {
         return Ok(());
     }
 

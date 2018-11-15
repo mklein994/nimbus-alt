@@ -22,6 +22,7 @@ pub fn build_cli() -> App<'static, 'static> {
                 .short("t")
                 .takes_value(true),
         )
+        .arg(Arg::with_name("live").long("live"))
         .subcommand(
             SubCommand::with_name("owm")
                 .about("OpenWeatherMap")
