@@ -14,6 +14,7 @@ pub fn build_cli() -> App<'static, 'static> {
                 .short("c")
                 .value_names(&["lat", "lon"])
                 .required(false)
+                .require_equals(true)
                 .require_delimiter(true),
         )
         .arg(
