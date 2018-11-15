@@ -1,4 +1,5 @@
 use super::Config;
+use clap::ArgMatches;
 use failure::Error;
 use reqwest::Client;
 use serde::de::DeserializeOwned;
@@ -12,7 +13,7 @@ pub trait WeatherApi<'a> {
     const BASE_URL: &'static str;
     type Current: std::fmt::Debug + DeserializeOwned;
 
-    fn new(config: &'a Config) -> Self;
+    fn new(config: &'a Config, m: &'a ArgMatches) -> Self;
     fn url(&self) -> Url;
     fn current(&self, client: &Client) -> Result<Self::Current, Error> {
         client.get(self.url()).send()?.json().map_err(Error::from)

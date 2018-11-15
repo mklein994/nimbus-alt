@@ -1,6 +1,7 @@
 use super::Config;
 use super::{ForecastApi, WeatherApi};
-use crate::config::OwmUnit;
+use clap::ArgMatches;
+use crate::config::{GenericWeatherUnit, OwmUnit};
 use url::Url;
 
 mod models;
@@ -24,7 +25,7 @@ impl<'a, 'c: 'a> WeatherApi<'c> for Owm<'a> {
     const BASE_URL: &'static str = "https://api.openweathermap.org/data/2.5";
     type Current = Current;
 
-    fn new(config: &'c Config) -> Self {
+    fn new(config: &'c Config, m: &'c ArgMatches) -> Self {
         let owm = config
             .owm
             .as_ref()
@@ -33,15 +34,22 @@ impl<'a, 'c: 'a> WeatherApi<'c> for Owm<'a> {
         let key: &str = &owm.key;
 
         // NOTE: There must always be a location.
-        let location = if let Some(ref id) = owm.location_id {
-            Location::Id(id)
-        } else if let Some((lat, lon)) = config.coordinates {
-            Location::Coord(lat, lon)
-        } else {
-            panic!("location required. May be coordinates or a location id.");
-        };
+        let location = values_t!(m.values_of("coordinates"), f64)
+            .and_then(|coordinates| Ok(Location::Coord(coordinates[0], coordinates[1])))
+            .ok()
+            .or_else(|| owm.location_id.as_ref().map(|id| Location::Id(id)))
+            .or_else(|| {
+                config
+                    .coordinates
+                    .map(|(lat, lon)| Location::Coord(lat, lon))
+            })
+            .expect("location required. Must be coordinates or a location id.");
 
-        let unit = owm.unit.or_else(|| config.unit.map(OwmUnit::from));
+        let unit = value_t!(m.value_of("units"), GenericWeatherUnit)
+            .map(OwmUnit::from)
+            .ok()
+            .or(owm.unit)
+            .or_else(|| config.unit.map(OwmUnit::from));
 
         Self {
             key,
@@ -114,7 +122,8 @@ mod tests {
             ..Default::default()
         };
 
-        let api = Owm::new(&config);
+        let matches = clap::App::new("name").get_matches_from(vec!["name"]);
+        let api = Owm::new(&config, &matches);
 
         let expected_url = Url::parse(
             "https://api.openweathermap.org/data/2.5/weather?\
@@ -143,7 +152,8 @@ mod tests {
             ..Default::default()
         };
 
-        let api = Owm::new(&config);
+        let matches = clap::App::new("name").get_matches_from(vec!["name"]);
+        let api = Owm::new(&config, &matches);
 
         let expected_url = Url::parse(
             "https://api.openweathermap.org/data/2.5/weather?\
@@ -172,7 +182,8 @@ mod tests {
             ..Default::default()
         };
 
-        let api = Owm::new(&config);
+        let matches = clap::App::new("name").get_matches_from(vec!["name"]);
+        let api = Owm::new(&config, &matches);
 
         let expected_url = Url::parse(
             "https://api.openweathermap.org/data/2.5/weather?\
@@ -202,7 +213,8 @@ mod tests {
             ..Default::default()
         };
 
-        let api = Owm::new(&config);
+        let matches = clap::App::new("name").get_matches_from(vec!["name"]);
+        let api = Owm::new(&config, &matches);
 
         let expected_url = Url::parse(
             "https://api.openweathermap.org/data/2.5/weather?\
@@ -231,6 +243,7 @@ mod tests {
             ..Default::default()
         };
 
-        Owm::new(&config);
+        let matches = clap::App::new("name").get_matches_from(vec!["name"]);
+        Owm::new(&config, &matches);
     }
 }

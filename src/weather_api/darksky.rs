@@ -1,6 +1,7 @@
 use super::Config;
 use super::{HistoricalApi, WeatherApi};
-use crate::config::DarkSkyUnit;
+use clap::ArgMatches;
+use crate::config::{DarkSkyUnit, GenericWeatherUnit};
 use url::Url;
 
 mod models;
@@ -18,7 +19,7 @@ impl<'a, 'c: 'a> WeatherApi<'c> for DarkSky<'a> {
     const BASE_URL: &'static str = "https://api.darksky.net/forecast";
     type Current = Forecast;
 
-    fn new(config: &'a Config) -> Self {
+    fn new(config: &'a Config, m: &'a ArgMatches) -> Self {
         let darksky = config
             .darksky
             .as_ref()
@@ -26,11 +27,17 @@ impl<'a, 'c: 'a> WeatherApi<'c> for DarkSky<'a> {
 
         let key: &str = &darksky.key;
 
-        let (latitude, longitude) = config
-            .coordinates
+        let (latitude, longitude) = values_t!(m.values_of("coordinates"), f64)
+            .and_then(|coordinates| Ok((coordinates[0], coordinates[1])))
+            .ok()
+            .or(config.coordinates)
             .expect("tried creating darksky api without coordinates in config");
 
-        let unit: Option<DarkSkyUnit> = darksky.unit.or_else(|| config.unit.map(DarkSkyUnit::from));
+        let unit = value_t!(m.value_of("units"), GenericWeatherUnit)
+            .map(DarkSkyUnit::from)
+            .ok()
+            .or(darksky.unit)
+            .or_else(|| config.unit.map(DarkSkyUnit::from));
 
         Self {
             key,
@@ -90,7 +97,8 @@ mod tests {
             ..Default::default()
         };
 
-        let api = DarkSky::new(&config);
+        let matches = clap::App::new("name").get_matches_from(vec!["name"]);
+        let api = DarkSky::new(&config, &matches);
 
         let expected_url =
             Url::parse("https://api.darksky.net/forecast/my_key/12.345,-54.321").unwrap();
@@ -116,7 +124,8 @@ mod tests {
             ..Default::default()
         };
 
-        let api = DarkSky::new(&config);
+        let matches = clap::App::new("name").get_matches_from(vec!["name"]);
+        let api = DarkSky::new(&config, &matches);
 
         let expected_url = Url::parse(
             "https://api.darksky.net/forecast/my_key/12.345,-54.321?\

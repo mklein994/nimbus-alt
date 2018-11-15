@@ -12,20 +12,21 @@ pub use self::config::*;
 use self::weather_api::darksky::DarkSky;
 use self::weather_api::owm::Owm;
 use self::weather_api::{ForecastApi, HistoricalApi, WeatherApi};
+use clap::ArgMatches;
 use failure::Error;
 use reqwest::Client;
 
-pub fn run(config: &Config) -> Result<(), Error> {
+pub fn run(config: &Config, matches: &ArgMatches) -> Result<(), Error> {
     env_logger::init();
     info!("logging enabled");
     debug!("{:?}", config);
 
-    let owm = Owm::new(&config);
+    let owm = Owm::new(&config, &matches);
     info!("{:?}", owm);
     let owm_url = owm.url();
     info!("owm url: {}", owm_url);
 
-    let darksky = DarkSky::new(&config);
+    let darksky = DarkSky::new(&config, &matches);
     info!("{:?}", darksky);
     let darksky_url = darksky.url();
     info!("darksky url: {}", darksky_url);
@@ -50,11 +51,13 @@ pub fn run(config: &Config) -> Result<(), Error> {
     info!("successfully retrieved darksky current weather");
     trace!("{:?}", darksky_current_weather);
 
-    if let Some(time) = std::env::args().nth(1) {
-        let time = time.parse::<i64>()?;
-        let darksky_historical_weather: serde_json::Value = darksky.historical(&client, time)?;
-        info!("successfully retrieved darksky historical weather");
-        trace!("{}", darksky_historical_weather);
+    if matches.is_present("time") {
+        if let Ok(time) = value_t!(matches.value_of("time"), i64) {
+            let darksky_historical_weather: serde_json::Value =
+                darksky.historical(&client, time)?;
+            info!("successfully retrieved darksky historical weather");
+            trace!("{}", darksky_historical_weather);
+        }
     }
 
     Ok(())

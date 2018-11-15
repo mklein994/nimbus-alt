@@ -3,6 +3,7 @@ use failure::{Fail, ResultExt};
 use serde_derive::Deserialize;
 use std::fs::File;
 use std::io::prelude::*;
+use std::str::FromStr;
 
 mod darksky_config;
 mod owm_config;
@@ -15,6 +16,21 @@ pub use self::owm_config::*;
 pub enum GenericWeatherUnit {
     Metric,
     Imperial,
+}
+
+#[derive(Fail, Debug)]
+#[fail(display = "invalid unit passed")]
+pub struct InvalidUnit;
+
+impl FromStr for GenericWeatherUnit {
+    type Err = InvalidUnit;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "metric" => Ok(GenericWeatherUnit::Metric),
+            "imperial" => Ok(GenericWeatherUnit::Imperial),
+            &_ => Err(InvalidUnit),
+        }
+    }
 }
 
 #[derive(Debug, Deserialize)]
