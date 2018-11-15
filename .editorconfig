@@ -2,6 +2,6 @@
 
 root = true
 
-[.travis.yml]
+[*.yml]
 indentation_style = space
 indent_size = 2
