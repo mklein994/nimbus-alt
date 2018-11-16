@@ -32,7 +32,7 @@ pub fn run(config: &Config, matches: &ArgMatches) -> Result<(), Error> {
     info!("darksky url: {}", darksky_url);
 
     // TODO: maybe remove this flag once testing is setup
-    if matches.is_present("live") == false {
+    if !matches.is_present("live") {
         return Ok(());
     }
 
