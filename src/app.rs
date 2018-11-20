@@ -29,4 +29,11 @@ pub fn build_cli() -> App<'static, 'static> {
                 .about("OpenWeatherMap")
                 .arg(Arg::with_name("current").long("current").short("c")),
         )
+        .arg(
+            Arg::with_name("verbose")
+                .long("verbose")
+                .short("v")
+                .global(true)
+                .multiple(true),
+        )
 }

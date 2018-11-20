@@ -13,11 +13,23 @@ use self::weather_api::darksky::DarkSky;
 use self::weather_api::owm::Owm;
 use self::weather_api::{ForecastApi, HistoricalApi, WeatherApi};
 use clap::ArgMatches;
+use env_logger::Builder;
 use failure::Error;
+use log::LevelFilter;
 use reqwest::Client;
 
 pub fn run(config: &Config, matches: &ArgMatches) -> Result<(), Error> {
-    env_logger::init();
+    Builder::from_default_env()
+        .filter(
+            Some("nimbus_alt"),
+            match matches.occurrences_of("verbose") {
+                1 => LevelFilter::Info,
+                2 => LevelFilter::Debug,
+                3 => LevelFilter::Trace,
+                _ => LevelFilter::Off,
+            },
+        )
+        .init();
     info!("logging enabled");
     debug!("{:?}", config);
 
