@@ -34,7 +34,7 @@ pub fn run(config: &Config, matches: &ArgMatches) -> Result<(), Error> {
         return Ok(());
     }
 
-    let client = Client::builder().gzip(true).build()?;
+    let client = Client::new();
 
     let owm_current_weather = owm.current(&client)?;
     info!("successfully retrieved owm current weather");
