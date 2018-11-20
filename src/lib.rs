@@ -48,27 +48,11 @@ pub fn run(config: &Config, matches: &ArgMatches) -> Result<(), Error> {
 
     let client = Client::new();
 
-    let owm_current_weather = owm.current(&client)?;
-    info!("successfully retrieved owm current weather");
-    trace!("{:?}", owm_current_weather);
-
-    trace!("owm forecast url: {}", owm.forecast_url());
-    let owm_forecast_weather = owm.forecast(&client)?;
-    info!("successfully retrieved owm forecast weather");
-    trace!("{:?}", owm_forecast_weather);
-
-    let darksky_current_weather = darksky.current(&client)?;
-    info!("successfully retrieved darksky current weather");
-    trace!("{:?}", darksky_current_weather);
-
-    if matches.is_present("time") {
-        if let Ok(time) = value_t!(matches.value_of("time"), i64) {
-            let darksky_historical_weather: serde_json::Value =
-                darksky.historical(&client, time)?;
-            info!("successfully retrieved darksky historical weather");
-            trace!("{}", darksky_historical_weather);
-        }
-    }
+    let darksky_current: self::weather_api::darksky::Forecast = client
+        .get(darksky.url())
+        .send()
+        .and_then(|mut res| res.json())?;
+    trace!("{:#?}", darksky_current);
 
     Ok(())
 }
