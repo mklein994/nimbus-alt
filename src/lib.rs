@@ -23,13 +23,11 @@ pub fn run(config: &Config, matches: &ArgMatches) -> Result<(), Error> {
 
     let owm = Owm::new(&config, &matches);
     info!("{:?}", owm);
-    let owm_url = owm.url();
-    info!("owm url: {}", owm_url);
+    info!("owm url: {}", owm.url());
 
     let darksky = DarkSky::new(&config, &matches);
-    info!("{:?}", darksky);
-    let darksky_url = darksky.url();
-    info!("darksky url: {}", darksky_url);
+    debug!("{:?}", darksky);
+    debug!("darksky url: {}", darksky.url());
 
     // TODO: maybe remove this flag once testing is setup
     if !matches.is_present("live") {
