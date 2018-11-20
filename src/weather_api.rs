@@ -15,6 +15,7 @@ pub trait WeatherApi<'a> {
 
     fn new(config: &'a Config, m: &'a ArgMatches) -> Self;
     fn url(&self) -> Url;
+    fn current_url(&self) -> Url;
     fn current(&self, client: &Client) -> Result<Self::Current, Error> {
         client.get(self.url()).send()?.json().map_err(Error::from)
     }

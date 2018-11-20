@@ -83,6 +83,10 @@ impl<'a, 'c: 'a> WeatherApi<'c> for Owm<'a> {
 
         url
     }
+
+    fn current_url(&self) -> Url {
+        self.url()
+    }
 }
 
 impl<'a, 'f: 'a> ForecastApi<'f> for Owm<'a> {

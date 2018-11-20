@@ -64,6 +64,15 @@ impl<'a, 'c: 'a> WeatherApi<'c> for DarkSky<'a> {
 
         url
     }
+
+    fn current_url(&self) -> Url {
+        let mut url = self.url();
+        url.query_pairs_mut()
+            .append_pair("exclude", "minutely,hourly,daily,alerts,flags")
+            .finish();
+
+        url
+    }
 }
 
 impl<'a> HistoricalApi<'a> for DarkSky<'a> {
