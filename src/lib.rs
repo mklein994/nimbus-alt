@@ -21,7 +21,7 @@ use reqwest::Client;
 pub fn run(config: &Config, matches: &ArgMatches) -> Result<(), Error> {
     Builder::from_default_env()
         .filter(
-            Some("nimbus_alt"),
+            Some(&crate_name!().replace("-", "_")),
             match matches.occurrences_of("verbose") {
                 1 => LevelFilter::Info,
                 2 => LevelFilter::Debug,
