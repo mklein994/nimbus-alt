@@ -45,7 +45,7 @@ pub struct Config {
 impl Config {
     pub fn from_file() -> Result<Self, Error> {
         let config_path = match dirs::config_dir() {
-            Some(path) => path.join("nimbus-alt").join("config.toml"),
+            Some(path) => path.join(crate_name!()).join("config.toml"),
             None => panic!("Couldn't find XDG_CONFIG_HOME"),
         };
 
