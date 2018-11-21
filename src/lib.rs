@@ -11,7 +11,7 @@ mod weather_api;
 pub use self::config::*;
 use self::weather_api::darksky::DarkSky;
 use self::weather_api::owm::Owm;
-use self::weather_api::{ForecastApi, HistoricalApi, WeatherApi};
+pub use self::weather_api::{ForecastApi, HistoricalApi, WeatherApi};
 use clap::ArgMatches;
 use env_logger::Builder;
 use failure::Error;
