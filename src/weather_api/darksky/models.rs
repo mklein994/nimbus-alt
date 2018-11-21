@@ -1,5 +1,19 @@
 use super::DarkSkyUnit;
+use failure::Fail;
 use serde_derive::Deserialize;
+use std::fmt;
+
+#[derive(Fail, Debug, Deserialize)]
+pub struct DarkSkyError {
+    code: u16,
+    error: String,
+}
+
+impl fmt::Display for DarkSkyError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "darksky error {}: {}", self.code, self.error)
+    }
+}
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]

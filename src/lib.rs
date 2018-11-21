@@ -48,11 +48,13 @@ pub fn run(config: &Config, matches: &ArgMatches) -> Result<(), Error> {
 
     let client = Client::new();
 
-    let darksky_current: self::weather_api::darksky::Forecast = client
-        .get(darksky.current_url())
-        .send()
-        .and_then(|mut res| res.json())?;
-    trace!("{:#?}", darksky_current);
+    darksky.current(&client).map(|forecast| {
+        println!("{:?}", forecast);
+    })?;
+
+    owm.current(&client).map(|forecast| {
+        println!("{:?}", forecast);
+    })?;
 
     Ok(())
 }

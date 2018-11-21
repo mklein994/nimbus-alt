@@ -1,12 +1,12 @@
 use super::Config;
 use super::{HistoricalApi, WeatherApi};
-use clap::ArgMatches;
 use crate::config::{DarkSkyUnit, GenericWeatherUnit};
+use clap::ArgMatches;
 use url::Url;
 
 mod models;
 
-pub use self::models::Forecast;
+pub use self::models::{DarkSkyError, Forecast};
 
 #[derive(Debug, PartialEq)]
 pub struct DarkSky<'a> {
@@ -18,6 +18,7 @@ pub struct DarkSky<'a> {
 impl<'a, 'c: 'a> WeatherApi<'c> for DarkSky<'a> {
     const BASE_URL: &'static str = "https://api.darksky.net/forecast";
     type Current = Forecast;
+    type ApiError = DarkSkyError;
 
     fn new(config: &'a Config, m: &'a ArgMatches) -> Self {
         let darksky = config
