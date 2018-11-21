@@ -27,7 +27,14 @@ pub fn build_cli() -> App<'static, 'static> {
         .subcommand(
             SubCommand::with_name("owm")
                 .about("OpenWeatherMap")
-                .arg(Arg::with_name("current").long("current").short("c")),
+                .arg(Arg::with_name("current").long("current").short("c"))
+                .arg(
+                    Arg::with_name("units")
+                        .long("units")
+                        .short("u")
+                        .takes_value(true)
+                        .possible_values(&["metric", "imperial"]),
+                ),
         )
         .arg(
             Arg::with_name("verbose")
