@@ -22,16 +22,26 @@ use log::LevelFilter;
 use reqwest::Client;
 
 pub fn run(config: &Config, matches: &ArgMatches) -> Result<(), Error> {
+    let arg_filter = if std::env::var("RUST_LOG").is_ok() || matches.occurrences_of("verbose") == 0
+    {
+        Builder::from_default_env().build().filter()
+    } else {
+        match matches.occurrences_of("verbose") {
+            1 => LevelFilter::Info,
+            2 => LevelFilter::Debug,
+            3 => LevelFilter::Trace,
+            _ => {
+                clap::Error::with_description(
+                    "--verbose (-v) can be passed up to 3 times.",
+                    clap::ErrorKind::TooManyValues,
+                )
+                .exit();
+            }
+        }
+    };
+
     Builder::from_default_env()
-        .filter(
-            Some(&crate_name!().replace("-", "_")),
-            match matches.occurrences_of("verbose") {
-                1 => LevelFilter::Info,
-                2 => LevelFilter::Debug,
-                3 => LevelFilter::Trace,
-                _ => LevelFilter::Off,
-            },
-        )
+        .filter(Some(&crate_name!().replace("-", "_")), arg_filter)
         .init();
     info!("logging enabled");
     debug!("{:?}", config);
