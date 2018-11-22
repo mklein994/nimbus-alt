@@ -5,6 +5,7 @@ pub fn build_cli() -> App<'static, 'static> {
         .arg(
             Arg::with_name("units")
                 .long("units")
+                .short("u")
                 .takes_value(true)
                 .possible_values(&["metric", "imperial"]),
         )
