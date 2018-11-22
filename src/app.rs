@@ -7,6 +7,7 @@ pub fn build_cli() -> App<'static, 'static> {
                 .long("units")
                 .short("u")
                 .takes_value(true)
+                // TODO: provide a function to generate this dynamically.
                 .possible_values(&["metric", "imperial"]),
         )
         .arg(
@@ -34,8 +35,19 @@ pub fn build_cli() -> App<'static, 'static> {
                         .long("units")
                         .short("u")
                         .takes_value(true)
+                        // TODO: provide a function to generate this dynamically.
                         .possible_values(&["metric", "imperial"]),
                 ),
+        )
+        .subcommand(
+            SubCommand::with_name("darksky").about("DarkSky").arg(
+                Arg::with_name("units")
+                    .long("units")
+                    .short("u")
+                    .takes_value(true)
+                    // TODO: provide a function to generate this dynamically.
+                    .possible_values(&["auto", "ca", "si", "uk2", "us"]),
+            ),
         )
         .arg(
             Arg::with_name("verbose")

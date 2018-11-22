@@ -1,6 +1,5 @@
 use super::GenericWeatherUnit;
-use serde_derive::Deserialize;
-use std::fmt;
+use serde_derive::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -9,7 +8,7 @@ pub struct DarkSkyConfig {
     pub unit: Option<DarkSkyUnit>,
 }
 
-#[derive(Debug, PartialEq, Eq, Copy, Clone, Deserialize)]
+#[derive(Debug, PartialEq, Eq, Copy, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum DarkSkyUnit {
     Auto,
@@ -18,22 +17,8 @@ pub enum DarkSkyUnit {
     Uk2,
     Us,
 }
-
-impl fmt::Display for DarkSkyUnit {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            match self {
-                DarkSkyUnit::Auto => "auto",
-                DarkSkyUnit::Ca => "ca",
-                DarkSkyUnit::Si => "si",
-                DarkSkyUnit::Uk2 => "uk2",
-                DarkSkyUnit::Us => "us",
-            }
-        )
-    }
-}
+forward_from_str_to_serde!(DarkSkyUnit);
+forward_display_to_serde!(DarkSkyUnit);
 
 impl From<GenericWeatherUnit> for DarkSkyUnit {
     fn from(unit: GenericWeatherUnit) -> Self {

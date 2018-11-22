@@ -4,6 +4,9 @@ extern crate log;
 #[macro_use]
 extern crate clap;
 
+#[macro_use]
+extern crate serde_plain;
+
 pub mod app;
 mod config;
 mod weather_api;

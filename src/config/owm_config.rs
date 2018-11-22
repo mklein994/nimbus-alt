@@ -1,6 +1,5 @@
 use super::GenericWeatherUnit;
-use serde_derive::Deserialize;
-use std::fmt;
+use serde_derive::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -10,12 +9,14 @@ pub struct OwmConfig {
     pub unit: Option<OwmUnit>,
 }
 
-#[derive(Debug, PartialEq, Eq, Copy, Clone, Deserialize)]
+#[derive(Debug, PartialEq, Eq, Copy, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum OwmUnit {
     Metric,
     Imperial,
 }
+forward_from_str_to_serde!(OwmUnit);
+forward_display_to_serde!(OwmUnit);
 
 impl From<GenericWeatherUnit> for OwmUnit {
     fn from(unit: GenericWeatherUnit) -> Self {
@@ -23,18 +24,5 @@ impl From<GenericWeatherUnit> for OwmUnit {
             GenericWeatherUnit::Metric => OwmUnit::Metric,
             GenericWeatherUnit::Imperial => OwmUnit::Imperial,
         }
-    }
-}
-
-impl fmt::Display for OwmUnit {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            match self {
-                OwmUnit::Metric => "metric",
-                OwmUnit::Imperial => "imperial",
-            }
-        )
     }
 }

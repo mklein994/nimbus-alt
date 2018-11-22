@@ -21,6 +21,8 @@ impl<'a, 'c: 'a> WeatherApi<'c> for DarkSky<'a> {
     type ApiError = DarkSkyError;
 
     fn new(config: &'a Config, m: &'a ArgMatches) -> Self {
+        let darksky_matches = m.subcommand_matches("darksky");
+
         let darksky = config
             .darksky
             .as_ref()
@@ -34,8 +36,9 @@ impl<'a, 'c: 'a> WeatherApi<'c> for DarkSky<'a> {
             .or(config.coordinates)
             .expect("tried creating darksky api without coordinates in config");
 
-        let unit = value_t!(m.value_of("units"), GenericWeatherUnit)
-            .map(DarkSkyUnit::from)
+        let unit = darksky_matches
+            .and_then(|dm| value_t!(dm.value_of("units"), DarkSkyUnit).ok())
+            .ok_or_else(|| value_t!(m.value_of("units"), GenericWeatherUnit).map(DarkSkyUnit::from))
             .ok()
             .or(darksky.unit)
             .or_else(|| config.unit.map(DarkSkyUnit::from));
