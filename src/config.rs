@@ -3,6 +3,7 @@ use failure::{Fail, ResultExt};
 use serde_derive::Deserialize;
 use std::fs::File;
 use std::io::prelude::*;
+use std::str::FromStr;
 
 mod darksky_config;
 mod owm_config;
@@ -83,6 +84,24 @@ impl Config {
         }
 
         Ok(config)
+    }
+
+    pub fn merge_args(mut self, args: &clap::ArgMatches) -> Result<Self, Error> {
+        match args.subcommand() {
+            ("owm", Some(owm_m)) => {
+                if let Some(ref mut owm) = self.owm {
+                    if let Some(unit) = owm_m
+                        .value_of("unit")
+                        .and_then(|u| OwmUnit::from_str(u).ok())
+                    {
+                        owm.unit = Some(unit);
+                    }
+                }
+            }
+            ("darksky", Some(darksky_m)) => {}
+            _ => {}
+        }
+        Ok(self)
     }
 }
 
