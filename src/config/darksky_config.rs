@@ -8,8 +8,9 @@ pub struct DarkSkyConfig {
     pub unit: Option<DarkSkyUnit>,
 }
 
-#[derive(Debug, PartialEq, Eq, Copy, Clone, Deserialize, Serialize)]
+#[derive(Display, Debug, PartialEq, Eq, Copy, Clone, EnumString, Deserialize, Serialize)]
 #[serde(rename_all = "lowercase")]
+#[strum(serialize_all = "kebab_case")]
 pub enum DarkSkyUnit {
     Auto,
     Ca,
@@ -17,8 +18,6 @@ pub enum DarkSkyUnit {
     Uk2,
     Us,
 }
-forward_from_str_to_serde!(DarkSkyUnit);
-forward_display_to_serde!(DarkSkyUnit);
 
 impl From<GenericWeatherUnit> for DarkSkyUnit {
     fn from(unit: GenericWeatherUnit) -> Self {

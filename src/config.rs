@@ -10,13 +10,13 @@ mod owm_config;
 pub use self::darksky_config::*;
 pub use self::owm_config::*;
 
-#[derive(Debug, Deserialize, Copy, Clone)]
+#[derive(Debug, Deserialize, EnumString, Copy, Clone)]
 #[serde(rename_all = "lowercase")]
+#[strum(serialize_all = "kebab_case")]
 pub enum GenericWeatherUnit {
     Metric,
     Imperial,
 }
-forward_from_str_to_serde!(GenericWeatherUnit);
 
 #[derive(Fail, Debug)]
 #[fail(display = "invalid unit passed")]

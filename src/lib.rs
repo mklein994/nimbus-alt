@@ -5,7 +5,7 @@ extern crate log;
 extern crate clap;
 
 #[macro_use]
-extern crate serde_plain;
+extern crate strum_macros;
 
 pub mod app;
 mod config;

@@ -9,14 +9,13 @@ pub struct OwmConfig {
     pub unit: Option<OwmUnit>,
 }
 
-#[derive(Debug, PartialEq, Eq, Copy, Clone, Deserialize, Serialize)]
+#[derive(Debug, Display, PartialEq, Eq, Copy, Clone, EnumString, Deserialize, Serialize)]
 #[serde(rename_all = "lowercase")]
+#[strum(serialize_all = "kebab_case")]
 pub enum OwmUnit {
     Metric,
     Imperial,
 }
-forward_from_str_to_serde!(OwmUnit);
-forward_display_to_serde!(OwmUnit);
 
 impl From<GenericWeatherUnit> for OwmUnit {
     fn from(unit: GenericWeatherUnit) -> Self {
