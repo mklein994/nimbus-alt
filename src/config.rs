@@ -10,7 +10,7 @@ mod owm_config;
 pub use self::darksky_config::*;
 pub use self::owm_config::*;
 
-#[derive(Debug, Deserialize, EnumString, Copy, Clone)]
+#[derive(Debug, Deserialize, EnumString, Copy, Clone, PartialEq)]
 #[serde(rename_all = "lowercase")]
 #[strum(serialize_all = "kebab_case")]
 pub enum GenericWeatherUnit {
@@ -22,7 +22,33 @@ pub enum GenericWeatherUnit {
 #[fail(display = "invalid unit passed")]
 pub struct InvalidUnit;
 
-#[derive(Debug, Deserialize)]
+/// Global configuration for the app.
+///
+/// # Example
+///
+/// `~/.config/nimbus-alt/config.toml`:
+/// ```
+/// # #[macro_use] extern crate toml;
+/// # use nimbus_alt::{DarkSkyConfig, Config, DarkSkyUnit, GenericWeatherUnit, OwmConfig, OwmUnit};
+/// # fn main() {
+/// # let config = toml! {
+/// coordinates = [ 12.345, -54.321 ]
+/// unit = "metric"
+///
+/// [owm]
+/// key = "a1b2c3d4"
+/// location_id = "1234567"
+/// unit = "imperial"
+///
+/// [darksky]
+/// key = "n1o2p3q4"
+/// unit = "ca"
+/// # }
+/// # .try_into::<Config>();
+/// # assert!(config.is_ok());
+/// # }
+/// ```
+#[derive(Debug, Deserialize, PartialEq)]
 #[serde(deny_unknown_fields)]
 pub struct Config {
     pub coordinates: Option<(f64, f64)>,

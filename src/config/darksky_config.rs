@@ -1,7 +1,7 @@
 use super::GenericWeatherUnit;
 use serde_derive::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, PartialEq)]
 #[serde(deny_unknown_fields)]
 pub struct DarkSkyConfig {
     pub key: String,
