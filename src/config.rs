@@ -35,12 +35,12 @@ pub struct InvalidUnit;
 ///
 /// # Example
 ///
-/// `~/.config/nimbus-alt/config.toml`:
 /// ```
-/// # #[macro_use] extern crate toml;
-/// # use nimbus_alt::{DarkSkyConfig, Config, DarkSkyUnit, GenericWeatherUnit, OwmConfig, OwmUnit};
+/// # use nimbus_alt::{Config, DarkSkyConfig, DarkSkyUnit, GenericWeatherUnit, OwmConfig, OwmUnit};
 /// # fn main() {
-/// # let config = toml! {
+/// # let config = toml::from_str::<Config>(r#"
+/// ## ~/.config/nimbus-alt/config.toml
+///
 /// coordinates = [ 12.345, -54.321 ]
 /// unit = "metric"
 ///
@@ -52,9 +52,8 @@ pub struct InvalidUnit;
 /// [darksky]
 /// key = "n1o2p3q4"
 /// unit = "ca"
-/// # }
-/// # .try_into::<Config>();
-/// # assert!(config.is_ok());
+/// # "#)
+/// # .expect("failed to parse example config.toml");
 /// # }
 /// ```
 #[derive(Debug, Deserialize, PartialEq)]
