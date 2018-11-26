@@ -18,6 +18,15 @@ pub enum GenericWeatherUnit {
     Imperial,
 }
 
+// TODO: this should be a procedural macro.
+pub trait ArgEnum {
+    const VARIANTS: &'static [&'static str];
+}
+
+impl ArgEnum for GenericWeatherUnit {
+    const VARIANTS: &'static [&'static str] = &["metric", "imperial"];
+}
+
 #[derive(Fail, Debug)]
 #[fail(display = "invalid unit passed")]
 pub struct InvalidUnit;

@@ -1,3 +1,5 @@
+use crate::config::ArgEnum;
+use crate::config::{DarkSkyUnit, GenericWeatherUnit, OwmUnit};
 use clap::{App, Arg, SubCommand};
 
 pub fn build_cli() -> App<'static, 'static> {
@@ -7,8 +9,7 @@ pub fn build_cli() -> App<'static, 'static> {
                 .long("units")
                 .short("u")
                 .takes_value(true)
-                // TODO: provide a function to generate this dynamically.
-                .possible_values(&["metric", "imperial"]),
+                .possible_values(GenericWeatherUnit::VARIANTS),
         )
         .arg(
             Arg::with_name("coordinates")
@@ -35,8 +36,7 @@ pub fn build_cli() -> App<'static, 'static> {
                         .long("units")
                         .short("u")
                         .takes_value(true)
-                        // TODO: provide a function to generate this dynamically.
-                        .possible_values(&["metric", "imperial"]),
+                        .possible_values(OwmUnit::VARIANTS),
                 ),
         )
         .subcommand(
@@ -45,8 +45,7 @@ pub fn build_cli() -> App<'static, 'static> {
                     .long("units")
                     .short("u")
                     .takes_value(true)
-                    // TODO: provide a function to generate this dynamically.
-                    .possible_values(&["auto", "ca", "si", "uk2", "us"]),
+                    .possible_values(DarkSkyUnit::VARIANTS),
             ),
         )
         .arg(

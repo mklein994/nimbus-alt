@@ -1,3 +1,4 @@
+use super::ArgEnum;
 use super::GenericWeatherUnit;
 use serde_derive::{Deserialize, Serialize};
 
@@ -15,6 +16,10 @@ pub struct OwmConfig {
 pub enum OwmUnit {
     Metric,
     Imperial,
+}
+
+impl ArgEnum for OwmUnit {
+    const VARIANTS: &'static [&'static str] = &["metric", "imperial"];
 }
 
 impl From<GenericWeatherUnit> for OwmUnit {

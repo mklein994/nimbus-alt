@@ -1,3 +1,4 @@
+use super::ArgEnum;
 use super::GenericWeatherUnit;
 use serde_derive::{Deserialize, Serialize};
 
@@ -17,6 +18,10 @@ pub enum DarkSkyUnit {
     Si,
     Uk2,
     Us,
+}
+
+impl ArgEnum for DarkSkyUnit {
+    const VARIANTS: &'static [&'static str] = &["auto", "ca", "si", "uk2", "us"];
 }
 
 impl From<GenericWeatherUnit> for DarkSkyUnit {
