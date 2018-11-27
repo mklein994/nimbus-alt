@@ -9,7 +9,9 @@ pub struct DarkSkyConfig {
     pub unit: Option<DarkSkyUnit>,
 }
 
-#[derive(Display, Debug, PartialEq, Eq, Copy, Clone, EnumString, EnumIter, Deserialize, Serialize)]
+#[derive(
+    Display, Debug, PartialEq, Eq, Copy, Clone, EnumString, EnumIter, Deserialize, Serialize,
+)]
 #[serde(rename_all = "lowercase")]
 #[strum(serialize_all = "kebab_case")]
 pub enum DarkSkyUnit {
