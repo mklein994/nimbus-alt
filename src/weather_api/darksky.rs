@@ -163,6 +163,7 @@ mod tests {
             coordinates: (12.345, -54.321),
             unit: None,
         };
+        #[allow(clippy::unreadable_literal)]
         let time = 1542143061;
 
         let expected_url = Url::parse(&format!(
