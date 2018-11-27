@@ -10,7 +10,7 @@ mod owm_config;
 pub use self::darksky_config::*;
 pub use self::owm_config::*;
 
-#[derive(Debug, Deserialize, EnumString, Copy, Clone, PartialEq)]
+#[derive(Debug, Deserialize, EnumString, EnumIter, Copy, Clone, PartialEq)]
 #[serde(rename_all = "lowercase")]
 #[strum(serialize_all = "kebab_case")]
 pub enum GenericWeatherUnit {
@@ -104,6 +104,7 @@ pub struct LocationMissingError;
 #[cfg(test)]
 mod tests {
     use super::*;
+    use strum::IntoEnumIterator;
 
     impl Default for Config {
         fn default() -> Self {
@@ -134,4 +135,22 @@ mod tests {
             }
         }
     }
+
+    macro_rules! test_variants {
+        ($name:ident, $t:ident) => {
+            #[test]
+            fn $name() {
+                assert_eq!($t::VARIANTS.len(), $t::VARIANTS.len());
+
+                $t::iter()
+                    .zip($t::VARIANTS)
+                    .inspect(|(k, v)| println!("{:?}", (k, v)))
+                    .for_each(|(k, v)| assert_eq!(k, v.parse::<$t>().unwrap()));
+            }
+        };
+    }
+
+    test_variants!(generic_unit_variants, GenericWeatherUnit);
+    test_variants!(owm_unit_variants, OwmUnit);
+    test_variants!(darksky_unit_variants, DarkSkyUnit);
 }
